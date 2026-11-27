@@ -112,22 +112,17 @@ function universalOffer(o,i){
 function strictOffer(o,i){
  const image=value(o.customImage||o.image||o.sourceImage),hotel=value(o.hotel,"Вариант размещения"),price=value(o.price,"Цена уточняется"),description=value(o.description);
  const excerpt=description.length>360?description.slice(0,357).trimEnd()+"…":description;
- const descriptionMarkup=description?`<p class="client-description strict-description" data-full="${esc(description)}">${esc(excerpt)}</p>${description.length>360?`<button type="button" class="client-description-toggle" aria-expanded="false">подробное описание</button>`:""}`:"";
- const detail=o.comment?`<div class="strict-comment"><strong>Комментарий менеджера:</strong> ${esc(o.comment)}</div>`:"";
- const terms=o.cancellation?`<div class="strict-comment"><strong>Условия:</strong> ${esc(o.cancellation)}</div>`:"";
- const fields=[["Номер",o.room],["Питание",o.meal],["Тариф",o.tariff],["Начало тура",o.date],["Ночей",o.nights],["Туристы",[o.adults?`${o.adults} взрослых`:"",o.children?`${o.children} детей`:""].filter(Boolean).join(" + ")],["Перелёт",o.flightIncluded==="yes"?"С перелётом":o.flightIncluded==="no"?"Без перелёта":""]].filter(([,v])=>value(v));
- const rows=fields.map(([label,v])=>`<tr><td>${esc(label)}</td><td><strong>${esc(v)}</strong></td></tr>`).join("");
- return `<article class="client-offer strict-offer">
-  ${image?`<div class="client-photo-wrap strict-photo"><a class="client-object-link client-photo-link" href="${esc(objectDescriptionUrl(o))}" target="_blank" rel="noopener"><img class="client-photo" src="${esc(image)}" alt="${esc(hotel)}" loading="${i>0?"lazy":"eager"}" onerror="this.closest('.client-photo-wrap').classList.add('image-error');this.style.display='none'"></a><div class="client-photo-fallback">Фото отеля</div></div>`:""}
-  <div class="client-offer-body strict-offer-body">
-   <div class="strict-offer-number">Вариант ${i+1}</div>
-   <div class="client-offer-title-row"><h2>${objectTitleLink(o,hotel)}</h2></div>
-   ${o.location?`<div class="client-location">${esc(o.location)}</div>`:""}
-   ${descriptionMarkup}${detail}${terms}
-   ${rows?`<table class="strict-details"><tbody>${rows}</tbody></table>`:""}
-   <div class="client-price-panel strict-price-panel"><div><div class="client-price">${esc(price)}</div><div class="client-price-caption">${o.nights?`<span class="client-price-caption-nights">за ${esc(o.nights)} ночей</span>`:""}</div></div><a class="client-cta" href="${primaryContact()}" target="_blank" rel="noopener">Забронировать</a></div>
-  </div>
- </article>`;
+ const descriptionMarkup=description?'<p class="client-description strict-description" data-full="'+esc(description)+'">'+esc(excerpt)+'</p>'+(description.length>360?'<button type="button" class="client-description-toggle" aria-expanded="false">подробное описание</button>':""):"";
+ const detail=o.comment?'<div class="strict-comment"><strong>Комментарий менеджера:</strong> '+esc(o.comment)+'</div>':"";
+ const terms=o.cancellation?'<div class="strict-comment strict-terms"><strong>Условия:</strong> '+esc(o.cancellation)+'</div>':"";
+ const fields=[["Номер",o.room],["Питание",o.meal],["Тариф",o.tariff],["Начало тура",o.date],["Ночей",o.nights],["Туристы",[o.adults?o.adults+" взрослых":"",o.children?o.children+" детей":""].filter(Boolean).join(" + ")],["Перелёт",o.flightIncluded==="yes"?"С перелётом":o.flightIncluded==="no"?"Без перелёта":""]].filter(([,v])=>value(v));
+ const rows=fields.map(([label,v])=>'<tr><td>'+esc(label)+'</td><td><strong>'+esc(v)+'</strong></td></tr>').join("");
+ return '<article class="client-offer strict-offer">'+
+  (image?'<div class="client-photo-wrap strict-photo"><a class="client-object-link client-photo-link" href="'+esc(objectDescriptionUrl(o))+'" target="_blank" rel="noopener"><img class="client-photo" src="'+esc(image)+'" alt="'+esc(hotel)+'" loading="'+(i>0?"lazy":"eager")+'" onerror="this.closest(\'.client-photo-wrap\').classList.add(\'image-error\');this.style.display=\'none\'"></a><div class="client-photo-fallback">Фото отеля</div></div>':"")+
+  '<div class="client-offer-body strict-offer-body"><div class="strict-offer-number">Вариант '+(i+1)+'</div><div class="client-offer-title-row"><h2>'+objectTitleLink(o,hotel)+'</h2></div>'+
+  (o.location?'<div class="client-location">'+esc(o.location)+'</div>':"")+
+  descriptionMarkup+detail+terms+(rows?'<table class="strict-details"><tbody>'+rows+'</tbody></table>':"")+
+  '<div class="client-price-panel strict-price-panel"><div class="strict-price-copy"><div class="client-price">'+esc(price)+'</div><div class="client-price-caption">'+(o.nights?'<span class="client-price-caption-nights">за '+esc(o.nights)+' ночей</span>':"")+'</div></div><a class="client-cta" href="'+primaryContact()+'" target="_blank" rel="noopener">Забронировать</a></div></div></article>';
 }
 function cardsScrollOffer(o,i){
  const image=value(o.customImage||o.image||o.sourceImage);

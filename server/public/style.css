@@ -1009,3 +1009,71 @@ header{gap:14px;align-items:center}
  .client-template-modern .client-offer-body{padding:17px 15px}
  .client-template-modern .client-last-cta{margin:0 16px}
 }
+
+/* v0.21.0 — Strict template rebuilt from the restrained editorial design */
+.client-template-simple{background:#e9eaed!important;color:#14243d!important;font-family:Arial,Helvetica,sans-serif!important}
+.client-template-simple .client-shell{width:100%;max-width:760px;margin:0 auto;padding:0 0 22px;background:transparent;box-sizing:border-box}
+.client-template-simple .client-header{width:100%;max-width:760px;margin:0 auto;padding:20px 24px;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;box-sizing:border-box}
+.client-template-simple .client-brand{display:block;flex:0 1 50%;min-width:0}
+.client-template-simple .client-brand img{display:block;width:170px;max-width:100%;height:auto}
+.client-template-simple .client-header-contacts{display:flex;flex-direction:column;align-items:flex-end;gap:4px;max-width:50%;font-size:13px;text-align:right;overflow-wrap:anywhere}
+.client-template-simple .client-header-contacts .client-phone{font-size:16px;font-weight:700;color:#14243d}
+.client-template-simple .client-main{width:100%;max-width:760px;margin:24px auto 0;padding:0;background:#fff;box-sizing:border-box}
+.client-template-simple .client-hero{width:100%;padding:28px 32px 22px;background:#fff;border-bottom:2px solid #14243d;box-sizing:border-box}
+.client-template-simple .client-hero h1{margin:0;font:36px/1.2 Georgia,"Times New Roman",serif;color:#14243d;letter-spacing:0;overflow-wrap:anywhere}
+.client-template-simple .client-hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:12px 0 0;width:100%;font:15px/1.5 Arial,Helvetica,sans-serif;color:#66758a}
+.client-template-simple .client-hero-meta .travel-meta-nights{margin-left:auto;text-align:right;white-space:normal}
+.client-template-simple .client-manager-intro{width:100%;margin:0;padding:22px 32px;background:#f1f2f4;border-top:0;border-radius:0;box-sizing:border-box}
+.client-template-simple .client-manager-copy>strong{font:20px/1.3 Georgia,"Times New Roman",serif;color:#14243d}
+.client-template-simple .client-manager-copy>p{margin:8px 0 14px;font:15px/1.55 Arial,Helvetica,sans-serif;color:#263b59}
+.client-template-simple .client-manager-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.client-template-simple .client-manager-buttons a{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #dfe5ec;background:#fff;color:#14243d;text-decoration:none;font:12px/1.3 Arial,Helvetica,sans-serif;overflow-wrap:anywhere}
+.client-template-simple .client-offers{display:block;width:100%;margin:0;padding:0;background:#fff}
+.client-template-simple .strict-offer{display:block;width:100%;max-width:100%;margin:0;background:#fff;border:0;border-radius:0;box-shadow:none;overflow:hidden}
+.client-template-simple .strict-photo{position:relative;width:100%;margin:0;padding:0;background:#e9eaed;overflow:hidden}
+.client-template-simple .strict-photo .client-photo-link{display:block;width:100%;margin:0;padding:0}
+.client-template-simple .strict-photo .client-photo{display:block;width:100%;max-width:100%;height:auto;max-height:none;object-fit:cover;border-radius:0}
+.client-template-simple .strict-photo .client-photo-fallback{display:none}
+.client-template-simple .strict-offer-body{width:100%;max-width:100%;margin:0;padding:24px 32px 28px;background:#fff;box-sizing:border-box}
+.client-template-simple .strict-offer-number{margin:0 0 8px;font:13px/1.4 Arial,Helvetica,sans-serif;color:#66758a}
+.client-template-simple .client-offer-title-row{margin:0}
+.client-template-simple .client-offer-title-row h2{margin:0;font:26px/1.25 Georgia,"Times New Roman",serif;color:#14243d;overflow-wrap:anywhere}
+.client-template-simple .client-offer-title-row h2 a{color:#14243d;text-decoration:none}
+.client-template-simple .client-location{margin:8px 0 0;font:14px/1.5 Arial,Helvetica,sans-serif;color:#66758a}
+.client-template-simple .strict-description{margin:14px 0 0;font:15px/1.55 Arial,Helvetica,sans-serif;color:#263b59}
+.client-template-simple .client-description-toggle{margin:8px 0 0;padding:0;border:0;background:transparent;color:#a66a08;font:bold 13px/1.4 Arial,Helvetica,sans-serif;cursor:pointer}
+.client-template-simple .strict-comment{margin:14px 0 0;padding:12px 14px;background:#f1f2f4;border-left:2px solid #14243d;font:13px/1.55 Arial,Helvetica,sans-serif;color:#263b59;overflow-wrap:anywhere}
+.client-template-simple .strict-terms{background:#f8f8f8;border:1px solid #e1e3e7}
+.client-template-simple .strict-details{width:100%;margin:16px 0 0;border-collapse:collapse;font:13px/1.5 Arial,Helvetica,sans-serif;table-layout:fixed}
+.client-template-simple .strict-details td{padding:8px 10px 8px 0;border-bottom:1px solid #d9dce1;vertical-align:top;color:#66758a;overflow-wrap:anywhere}
+.client-template-simple .strict-details td:first-child{width:34%;padding-right:12px}
+.client-template-simple .strict-details td+td{color:#14243d}
+.client-template-simple .strict-price-panel{display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;margin:18px 0 0;padding:18px 0 0;border:0;border-top:1px solid #d9dce1;border-radius:0;background:#fff;box-shadow:none}
+.client-template-simple .strict-price-panel .client-price{font:30px/1.25 Georgia,"Times New Roman",serif;color:#14243d}
+.client-template-simple .strict-price-panel .client-price-caption{margin:4px 0 0;font:12px/1.5 Arial,Helvetica,sans-serif;color:#66758a}
+.client-template-simple .strict-price-panel .client-cta{display:inline-block;flex:0 0 auto;padding:14px 22px;border:1px solid #14243d;border-radius:0;background:#14243d;color:#fff;text-decoration:none;text-align:center;font:bold 14px/1.3 Arial,Helvetica,sans-serif;white-space:normal;overflow-wrap:anywhere}
+.client-template-simple .strict-price-panel .client-cta:hover{background:#263c5c}
+.client-template-simple .client-last-cta{display:none}
+.client-template-simple .client-footer{width:100%;max-width:760px;margin:0 auto;padding:22px 16px 28px;background:#e9eaed;text-align:center;font:12px/1.7 Arial,Helvetica,sans-serif;color:#66758a;box-sizing:border-box}
+.client-template-simple .client-footer-company{font:bold 14px/1.4 Arial,Helvetica,sans-serif;color:#14243d}
+@media(max-width:620px){
+ .client-template-simple .client-shell,.client-template-simple .client-header,.client-template-simple .client-main,.client-template-simple .client-footer{width:100%;max-width:100%;min-width:0}
+ .client-template-simple .client-header{padding:14px;gap:12px}
+ .client-template-simple .client-brand img{width:140px}
+ .client-template-simple .client-header-contacts{font-size:11px}
+ .client-template-simple .client-header-contacts .client-phone{font-size:13px}
+ .client-template-simple .client-main{margin:14px auto 0}
+ .client-template-simple .client-hero{padding:22px 18px 18px}
+ .client-template-simple .client-hero h1{font-size:27px;line-height:1.2}
+ .client-template-simple .client-hero-meta{display:block;margin-top:10px;font-size:14px}
+ .client-template-simple .client-hero-meta .travel-meta-arrival,.client-template-simple .client-hero-meta .travel-meta-nights{display:block;width:auto;max-width:100%;margin:0 0 5px;text-align:left;white-space:normal}
+ .client-template-simple .client-manager-intro{padding:20px 18px}
+ .client-template-simple .client-manager-copy>p{font-size:14px}
+ .client-template-simple .strict-offer-body{padding:20px 18px 24px}
+ .client-template-simple .client-offer-title-row h2{font-size:23px}
+ .client-template-simple .strict-description{font-size:14px}
+ .client-template-simple .strict-price-panel{flex-direction:column;align-items:stretch;gap:14px;text-align:left}
+ .client-template-simple .strict-price-panel .client-cta{width:100%;text-align:center}
+ .client-template-simple .strict-price-panel .client-price{font-size:27px}
+ .client-template-simple .client-footer{padding:18px 14px 24px}
+}

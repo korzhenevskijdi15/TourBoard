@@ -20,6 +20,9 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Validate client JavaScript
+        run: node --check server/public/client.js
+
       - name: Create release ZIP
         run: git archive --format=zip --output=tourboard_${GITHUB_SHA}.zip ${GITHUB_SHA}
       - name: Configure SSH
