@@ -260,10 +260,13 @@ function defaultEmailBodyHtml(){
  });
  clone.querySelector("#collectionControlBar")?.remove();clone.querySelector("#emailPreviewModal")?.remove();
  clone.querySelectorAll(".client-description-toggle,.cards-description-toggle").forEach(button=>button.remove());
- // Email descriptions are limited to 400 characters for every collection template.
+ // Keep the Strict template description within 360 characters in preview and sent email.
+ // Other templates retain their existing 400-character email limit.
  clone.querySelectorAll(".client-description,.cards-description").forEach(paragraph=>{
   const full=String(paragraph.dataset.full||paragraph.textContent||"").trim();
-  paragraph.textContent=full.length>400?full.slice(0,399).trimEnd()+"…":full;
+  const limit=currentTemplate==="simple"?360:400;
+  const chars=Array.from(full);
+  paragraph.textContent=chars.length>limit?chars.slice(0,limit-1).join("").trimEnd()+"…":full;
   paragraph.removeAttribute("data-full");
  });
  clone.querySelectorAll("#offersPrev,#offersNext").forEach(button=>button.remove());
@@ -314,6 +317,21 @@ function defaultEmailBodyHtml(){
   clone.querySelectorAll(".strict-offer").forEach(card=>{card.style.setProperty("display","block","important");card.style.setProperty("margin-top","0","important");card.style.setProperty("margin-bottom","0","important");card.style.setProperty("box-sizing","border-box","important");});
   clone.querySelectorAll(".strict-photo .client-photo,.strict-photo .client-photo-link").forEach(el=>{el.style.setProperty("display","block","important");el.style.setProperty("width","100%","important");el.style.setProperty("height","auto","important");el.style.setProperty("max-width","100%","important");});
   clone.querySelectorAll(".strict-photo .client-photo").forEach(el=>{el.style.setProperty("object-fit","cover","important");});
+  // Keep arrival and nights on the same desktop row and prevent the hero
+  // divider from crossing the nights text in the email preview.
+  clone.querySelectorAll(".client-hero").forEach(hero=>{
+   hero.style.setProperty("height","auto","important");
+   hero.style.setProperty("min-height","0","important");
+   hero.style.setProperty("overflow","visible","important");
+   hero.style.setProperty("padding-bottom","18px","important");
+   hero.style.setProperty("box-sizing","border-box","important");
+  });
+  clone.querySelectorAll(".client-hero-meta").forEach(meta=>{
+   meta.style.cssText="display:block;width:100%;max-width:100%;height:auto;min-height:0;margin:8px 0 0;padding:0 0 8px;line-height:1.5;white-space:nowrap;overflow:visible;position:static;float:none;clear:both;box-sizing:border-box";
+   meta.querySelectorAll(".travel-meta-arrival,.travel-meta-nights").forEach(span=>{
+    span.style.cssText="display:inline-block;width:auto;max-width:none;height:auto;min-height:0;margin:0 18px 0 0;padding:0;white-space:nowrap;position:static;float:none;vertical-align:middle;line-height:1.5;box-sizing:border-box";
+   });
+  });
  }
  if(currentTemplate==="modern"){
   const brand=clone.querySelector(".client-brand"),contacts=clone.querySelector(".client-header-contacts");
@@ -601,7 +619,19 @@ function normalizeStrictEmailForMobile(html){
   const ml=el.style.getPropertyValue("margin-left");if(/^-?\d+(?:\.\d+)?px$/i.test(ml))el.style.setProperty("margin-left","0","important");
   const max=el.style.getPropertyValue("max-width");if(max==="none")el.style.setProperty("max-width","100%","important");
  });
- page.querySelectorAll(".client-hero-meta").forEach(el=>{el.style.cssText="display:block;width:100%;margin:8px 0 14px;padding:0;line-height:1.5";el.querySelectorAll(".travel-meta-arrival,.travel-meta-nights").forEach(span=>{span.style.cssText="display:inline-block;width:auto;max-width:100%;margin:0 14px 4px 0;padding:0;vertical-align:top";});});
+ page.querySelectorAll(".client-hero").forEach(hero=>{
+  hero.style.setProperty("height","auto","important");
+  hero.style.setProperty("min-height","0","important");
+  hero.style.setProperty("overflow","visible","important");
+  hero.style.setProperty("padding-bottom","18px","important");
+  hero.style.setProperty("box-sizing","border-box","important");
+ });
+ page.querySelectorAll(".client-hero-meta").forEach(el=>{
+  el.style.cssText="display:block;width:100%;max-width:100%;height:auto;min-height:0;margin:8px 0 0;padding:0 0 8px;line-height:1.5;white-space:nowrap;overflow:visible;position:static;float:none;clear:both;box-sizing:border-box";
+  el.querySelectorAll(".travel-meta-arrival,.travel-meta-nights").forEach(span=>{
+   span.style.cssText="display:inline-block;width:auto;max-width:none;height:auto;min-height:0;margin:0 18px 0 0;padding:0;white-space:nowrap;position:static;float:none;vertical-align:middle;line-height:1.5;box-sizing:border-box";
+  });
+ });
  page.querySelectorAll(".strict-details").forEach(table=>{table.style.setProperty("width","100%","important");table.style.setProperty("max-width","100%","important");table.querySelectorAll("td").forEach((td,i)=>{td.style.setProperty("width",i%2===0?"30%":"70%","important");td.style.setProperty("max-width","100%","important");});});
  page.querySelectorAll(".client-header .client-brand").forEach(el=>{el.style.setProperty("width","auto","important");el.style.setProperty("max-width","100%","important");});
  page.querySelectorAll(".client-social-icon").forEach(img=>{img.setAttribute("width","20");img.setAttribute("height","20");img.setAttribute("style","display:inline-block;width:20px;height:20px;max-width:20px;max-height:20px;object-fit:contain;border:0;vertical-align:middle");});
