@@ -366,6 +366,27 @@ function defaultEmailBodyHtml(){
    if(el.style.getPropertyValue("max-width")==="none")el.style.setProperty("max-width","100%","important");
   });
  }
+
+ // Strict description wrapping is also set inline for the editor preview and
+ // for clients that ignore the stylesheet (Mail.ru, Gmail, Yandex Mail).
+ if(currentTemplate==="simple"){
+  clone.querySelectorAll(".strict-description,.strict-comment").forEach(el=>{
+   el.style.setProperty("display","block","important");
+   el.style.setProperty("width","100%","important");
+   el.style.setProperty("max-width","100%","important");
+   el.style.setProperty("min-width","0","important");
+   el.style.setProperty("white-space","pre-wrap","important");
+   el.style.setProperty("overflow-wrap","anywhere","important");
+   el.style.setProperty("word-break","break-word","important");
+   el.style.setProperty("box-sizing","border-box","important");
+  });
+  clone.querySelectorAll(".strict-offer-body").forEach(el=>{
+   el.style.setProperty("width","100%","important");
+   el.style.setProperty("max-width","100%","important");
+   el.style.setProperty("min-width","0","important");
+   el.style.setProperty("box-sizing","border-box","important");
+  });
+ }
  // Modern template: use email-safe tables for the price panel and manager socials.
  // Some mobile mail clients ignore flex/grid and retain fixed heights from page CSS.
  if(currentTemplate==="modern"){
@@ -552,6 +573,24 @@ function sanitizeEmailHtml(html){
 function normalizeStrictEmailForMobile(html){
  const doc=new DOMParser().parseFromString(String(html||""),"text/html");
  const page=doc.querySelector(".client-template-simple");if(!page)return html;
+ // Explicitly wrap strict-template descriptions in the email/editor HTML.
+ // The copied page styles can otherwise retain a fixed desktop text width.
+ page.querySelectorAll(".strict-description,.strict-comment").forEach(el=>{
+  el.style.setProperty("display","block","important");
+  el.style.setProperty("width","100%","important");
+  el.style.setProperty("max-width","100%","important");
+  el.style.setProperty("min-width","0","important");
+  el.style.setProperty("white-space","pre-wrap","important");
+  el.style.setProperty("overflow-wrap","anywhere","important");
+  el.style.setProperty("word-break","break-word","important");
+  el.style.setProperty("box-sizing","border-box","important");
+ });
+ page.querySelectorAll(".strict-offer-body").forEach(el=>{
+  el.style.setProperty("width","100%","important");
+  el.style.setProperty("max-width","100%","important");
+  el.style.setProperty("min-width","0","important");
+  el.style.setProperty("box-sizing","border-box","important");
+ });
  page.style.setProperty("width","100%","important");page.style.setProperty("max-width","100%","important");page.style.setProperty("margin","0 auto","important");page.style.setProperty("overflow","visible","important");
  const shell=page.querySelector(".client-shell");if(shell){shell.style.setProperty("width","100%","important");shell.style.setProperty("max-width","600px","important");shell.style.setProperty("padding","12px 0 22px","important");}
  const main=page.querySelector(".client-main");if(main){main.style.setProperty("width","100%","important");main.style.setProperty("max-width","600px","important");main.style.setProperty("margin","18px auto","important");main.style.setProperty("padding","0","important");}
