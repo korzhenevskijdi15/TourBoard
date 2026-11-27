@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Tour Selection — Дельфин и Алеан",
+  "version": "0.18.5",
+  "description": "Tour Selection: авторизация, роли администратора и менеджеров",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.delfin-tour.ru/*",
+    "https://tourboard.online/*",
+    "http://localhost:8787/*",
+    "http://127.0.0.1:8787/*",
+    "https://alean.ru/*",
+    "https://www.alean.ru/*",
+    "http://alean.ru/*",
+    "http://www.alean.ru/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.delfin-tour.ru/*",
+        "https://alean.ru/*",
+        "https://www.alean.ru/*",
+        "http://alean.ru/*",
+        "http://www.alean.ru/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Моя подборка",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

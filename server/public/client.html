@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Подбор отдыха</title>
+<link rel="stylesheet" href="/style.css">
+ <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>
+<body class="client-page">
+<div class="client-shell">
+  <nav id="collectionControlBar" class="collection-control-bar" hidden aria-label="Управление подборкой">
+    <div class="collection-template-menu-wrap">
+      <button type="button" id="chooseCollectionTemplate" class="collection-control-button" aria-haspopup="true" aria-expanded="false">Выбор шаблона <span aria-hidden="true">▾</span></button>
+      <div id="collectionTemplateMenu" class="collection-template-menu" hidden role="menu">
+        <button type="button" role="menuitemradio" data-template="detailed">Универсальный</button>
+        <button type="button" role="menuitemradio" data-template="simple">Строгий</button>
+        <button type="button" role="menuitemradio" data-template="cards-scroll">Карточки с прокруткой</button>
+        <button type="button" role="menuitemradio" data-template="modern">Современный</button>
+      </div>
+    </div>
+    <button type="button" id="sendCollectionEmail" class="collection-control-button">Отправить по Email</button>
+    <div class="collection-social-wrap">
+      <button type="button" id="sendCollectionSocial" class="collection-control-button" aria-haspopup="true" aria-expanded="false">Отправить в соц. сети <span aria-hidden="true">▾</span></button>
+      <div id="collectionSocialMenu" class="collection-social-menu" hidden role="menu"></div>
+    </div>
+    <span id="collectionControlStatus" class="collection-control-status" aria-live="polite"></span>
+  </nav>
+  <header class="client-header">
+    <a class="client-brand" href="https://bagtravels.ru/" target="_blank" rel="noopener">
+      <img id="clientOrgLogo" src="https://content.btpanel.ru/storage/uploads/2026/11/25/6b06973cdf73b---11--02-1.webp" alt="Логотип организации">
+    </a>
+    <div class="client-header-contacts">
+      <a class="client-phone" href="tel:88005113515">8-800-511-35-15</a>
+      <a href="mailto:reservation@bagtravels.ru">reservation@bagtravels.ru</a>
+    </div>
+  </header>
+  <div id="emailPreviewModal" class="email-preview-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="emailPreviewTitle">
+    <section class="email-preview-dialog">
+      <header class="email-preview-header"><h2 id="emailPreviewTitle">Предпросмотр письма</h2><button type="button" id="closeEmailPreview" class="email-preview-close" aria-label="Закрыть">×</button></header>
+      <form id="emailPreviewForm" class="email-preview-form">
+        <div class="email-preview-fields">
+          <label>Получатель<input id="emailPreviewRecipient" type="email" required maxlength="150" placeholder="email клиента"></label>
+          <label>Тема письма<input id="emailPreviewSubject" type="text" maxlength="200" required></label>
+        </div>
+        <section class="email-body-editor" aria-label="Редактор тела письма">
+          <div class="email-editor-toolbar" id="emailEditorToolbar">
+            <button type="button" data-command="bold" title="Жирный"><b>B</b></button>
+            <button type="button" data-command="italic" title="Курсив"><i>I</i></button>
+            <button type="button" data-command="underline" title="Подчёркнутый"><u>U</u></button>
+            <span class="email-toolbar-divider"></span>
+            <button type="button" data-command="insertUnorderedList" title="Маркированный список">• Список</button>
+            <button type="button" data-command="insertOrderedList" title="Нумерованный список">1. Список</button>
+            <button type="button" id="emailInsertLink" title="Вставить ссылку">Ссылка</button>
+            <button type="button" id="emailInsertImage" title="Вставить изображение">Изображение</button>
+            <button type="button" id="emailHtmlMode" class="email-html-mode" title="Редактировать HTML">HTML-код</button>
+            <input type="file" id="emailImageFile" accept="image/*" hidden>
+          </div>
+          <div id="emailBodyVisual" class="email-body-visual" contenteditable="true" role="textbox" aria-label="Тело письма" aria-multiline="true"></div>
+          <textarea id="emailBodySource" class="email-body-source" spellcheck="false" aria-label="HTML-код тела письма" hidden></textarea>
+          <div class="email-html-actions" id="emailHtmlActions" hidden><button type="button" id="emailApplyHtml">Применить HTML к предпросмотру</button><button type="button" id="emailBackToVisual" class="secondary">Вернуться к редактору</button></div>
+        </section>
+        <p id="emailPreviewStatus" class="email-preview-status" aria-live="polite"></p>
+        <footer class="email-preview-actions"><button type="button" id="cancelEmailPreview" class="secondary">Закрыть</button><button type="submit">Отправить</button></footer>
+      </form>
+    </section>
+  </div>
+  <main id="app" class="client-main">
+    <div class="client-loading">Загружаем вашу подборку…</div>
+  </main>
+  <footer class="client-footer">
+    <div class="client-footer-company" id="clientOrgName">Рюкзак путешествий</div>
+    <div id="clientOrgAddress">Республика Крым, ул. Екатерининская, 48, 2 этаж</div>
+    <div class="client-footer-links">
+      <a id="footerVk" data-label="ВКонтакте" href="https://vk.com/bag_travels" target="_blank" rel="noopener">ВКонтакте</a>
+      <a id="footerMax" data-label="MAX" href="https://max.ru/" target="_blank" rel="noopener">MAX</a>
+      <a id="footerTelegram" data-label="Telegram" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+      <a id="footerWhatsapp" data-label="WhatsApp" href="https://wa.me/" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    <a id="clientOrgWebsite" href="https://bagtravels.ru/" target="_blank" rel="noopener">bagtravels.ru</a>
+  </footer>
+</div>
+<script src="/client.js?v=0.20.1"></script>
+</body>
+</html>

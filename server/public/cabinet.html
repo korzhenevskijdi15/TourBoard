@@ -1,0 +1,94 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tour Selection — кабинет</title><link rel="stylesheet" href="/style.css"> <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head><body>
+<header><div class="cabinet-header-copy cabinet-brand"><img src="/logo/tourboard-logo.png" alt="TourBoard" class="cabinet-brand-logo"><p>Личный кабинет</p></div><nav class="cabinet-tabs header-tabs" id="cabinetTabs" aria-label="Основные разделы"><button type="button" class="cabinet-tab active" data-tab="collectionsPanel" id="collectionsTab">Мои подборки</button><button type="button" class="cabinet-tab" data-tab="clientsPanel" id="clientsTab" hidden>Клиенты</button><button type="button" class="cabinet-tab" data-tab="managersPanel" id="managersTab" hidden>Менеджеры</button><button type="button" class="cabinet-tab" data-tab="managerSettings"><span>Персональные<br>настройки</span></button><button type="button" class="cabinet-tab" data-tab="organizationSettings" id="organizationTab"><span>Настройки<br>организации</span></button><button type="button" class="cabinet-tab" data-tab="organizationsPanel" id="organizationsTab" hidden>Клиенты</button><button type="button" class="cabinet-tab" data-tab="userCreationPanel" id="userCreationTab" hidden>Создание пользователей</button></nav><div class="cabinet-user-area"><span id="currentUserBadge"></span><button type="button" id="logoutButton" class="secondary">Выйти</button></div><a id="backToCabinet" class="secondary edit-back" href="/cabinet" hidden>← К подборкам</a></header>
+<main><section class="hero"><p>Создавайте подборки, редактируйте предложения и проверяйте клиентскую страницу перед отправкой.</p></section>
+<section class="panel manager-settings" id="managerSettings" hidden><div class="toolbar"><div><h3>Персональные настройки</h3><p class="settings-hint">Контакты будут отображаться на клиентских страницах всех подборок.</p></div></div>
+<form id="settingsForm">
+<div class="field-grid settings-grid">
+<label>Имя менеджера<input id="managerName" name="name" maxlength="150" required placeholder="Имя и фамилия"></label>
+<label>Телефон<input id="managerPhone" name="phone" type="tel" maxlength="80" placeholder="+7 …"></label>
+<label>Email<input id="managerEmail" name="email" type="email" maxlength="150" placeholder="manager@example.ru"></label>
+<label class="manager-social-field">Telegram — ссылка<input id="managerTelegram" name="telegram" type="url" placeholder="https://t.me/username"></label>
+<label class="manager-social-field">WhatsApp — ссылка<input id="managerWhatsapp" name="whatsapp" type="url" placeholder="https://wa.me/…"></label>
+<label class="manager-social-field">MAX — ссылка<input id="managerMax" name="max" type="url" placeholder="https://max.ru/…"></label>
+<label class="manager-social-field">VK — ссылка<input id="managerVk" name="vk" type="url" placeholder="https://vk.com/…"></label>
+</div>
+<div class="manager-photo-settings">
+ <label for="managerPhotoFile">Фото менеджера</label>
+ <div class="manager-photo-controls"><input id="managerPhotoFile" type="file" accept="image/*"><button type="button" class="secondary" id="removeManagerPhoto" hidden>Удалить фото</button></div>
+ <div class="manager-photo-preview" id="managerPhotoPreview" hidden><img id="managerPhotoPreviewImg" alt="Фото менеджера"><span>Фото будет отображаться в клиентской подборке</span></div>
+ <small class="settings-hint">Изображение автоматически уменьшается перед сохранением.</small>
+</div>
+<div class="actions"><button type="submit" id="saveSettings">Сохранить настройки</button></div><div id="settingsResult" class="result" aria-live="polite"></div>
+</form>
+<div class="creator-account-settings" id="creatorAccountSettings" hidden>
+ <div class="toolbar"><div><h4>Учётная запись Создателя</h4><p class="settings-hint">Можно изменить логин и пароль. Для подтверждения изменений введите текущий пароль.</p></div></div>
+ <form id="creatorAccountForm"><div class="field-grid settings-grid">
+  <label>Логин<input id="creatorAccountUsername" name="username" type="text" required maxlength="120" value="korzhenevskij.d.i15@gmail.com"></label>
+  <label>Текущий пароль<input name="currentPassword" type="password" required autocomplete="current-password"></label>
+  <label>Новый пароль<input name="newPassword" type="password" minlength="10" autocomplete="new-password" placeholder="Оставьте пустым, чтобы не менять"></label>
+ </div><div class="actions"><button type="submit">Изменить логин / пароль</button></div><div id="creatorAccountResult" class="result" aria-live="polite"></div></form>
+</div></section>
+<section class="panel manager-settings" id="organizationSettings" hidden><div class="toolbar"><div><h3>Настройки организации</h3><p class="settings-hint">Эти данные будут отображаться на клиентских страницах подборок.</p></div></div>
+<form id="orgSettingsForm"><div class="field-grid settings-grid">
+<label>Название компании<input id="orgName" maxlength="180" placeholder="Название организации"></label>
+<label>URL логотипа<input id="orgLogo" type="url" placeholder="https://example.com/logo.png"></label>
+<label>Телефон<input id="orgPhone" type="tel" maxlength="100" placeholder="+7 …"></label>
+<div class="org-email-settings"><label for="orgEmail">Email организации</label><input id="orgEmail" type="email" maxlength="150" placeholder="info@example.ru"><label class="checkbox-setting org-bcc-setting"><input id="emailCollectionBcc" type="checkbox">Отправлять скрытые копии подборок на указанную почту</label><p class="org-email-note">Письма отправляются от имени Tour Selection. Если клиент ответит на письмо, его ответ будет направлен на Email организации, указанный выше.</p></div>
+<label>Telegram<input id="orgTelegram" placeholder="https://t.me/username"></label>
+<label>WhatsApp<input id="orgWhatsapp" placeholder="https://wa.me/…"></label>
+<label>MAX<input id="orgMax" placeholder="https://max.ru/…"></label>
+<label>VK<input id="orgVk" placeholder="https://vk.com/…"></label>
+<label>Адрес офиса<input id="orgAddress" maxlength="300" placeholder="Город, улица, дом"></label>
+<label>Сайт<input id="orgWebsite" placeholder="https://example.ru"></label>
+<label class="checkbox-setting">Дать возможность менеджерам указывать личные соц. сети<input id="allowManagerSocials" type="checkbox"></label>
+</div><div class="actions"><button type="submit">Сохранить настройки организации</button></div><div id="orgResult" class="result" aria-live="polite"></div></form></section>
+<section class="panel" id="clientsPanel" hidden><div class="toolbar"><div><h3>Клиенты</h3><p class="settings-hint">Клиенты вашей организации. Менеджеры и администратор видят общий список.</p></div><button type="button" id="createClientButton">+ Создать</button></div>
+<form id="clientCreateForm" class="client-create-form" hidden><div class="field-grid settings-grid"><label>Имя клиента<input name="name" maxlength="150" placeholder="Имя клиента"></label><label>Телефон<input name="phone" type="tel" maxlength="80" placeholder="+7 …"></label><label>Email<input name="email" type="email" maxlength="150" placeholder="client@example.ru"></label></div><div class="actions"><button type="submit">Сохранить клиента</button><button type="button" class="secondary" id="cancelClientCreate">Отмена</button></div><div id="clientCreateResult" class="result" aria-live="polite"></div></form>
+<label class="client-search-label">Поиск клиента<input id="clientSearch" type="search" placeholder="Имя, телефон или Email"></label><div id="clientList" class="collection-list">Загружаем клиентов…</div></section>
+<section class="panel manager-settings" id="managersPanel" hidden><div class="toolbar"><div><h3>Менеджеры</h3><p class="settings-hint">Создавайте учётные записи менеджеров, привязанных к вашему аккаунту администратора.</p></div><button type="button" class="secondary" id="refreshManagers">Обновить</button></div>
+<form id="managerCreateForm"><div class="field-grid settings-grid"><label>Имя менеджера<input name="name" required maxlength="150" placeholder="Имя и фамилия"></label><label>Логин<input name="username" required minlength="3" maxlength="40" placeholder="manager.login"></label><label>Пароль<input name="password" type="password" required minlength="10" placeholder="Не менее 10 символов"></label></div><div class="actions"><button type="submit">Создать менеджера</button></div><div id="managerCreateResult" class="result" aria-live="polite"></div></form><div id="managerList" class="collection-list"></div></section>
+<section class="panel" id="organizationsPanel" hidden><div class="toolbar"><div><h3>Клиенты</h3><p class="settings-hint">Реестр клиентов проекта, их администраторов и контактных данных.</p></div><button type="button" class="secondary" id="refreshOrganizations">Обновить</button></div>
+<label>Поиск по названию клиента<input id="organizationSearch" type="search" placeholder="Введите название…"></label>
+<div id="organizationList" class="collection-list">Загружаем организации…</div>
+<details class="organization-create"><summary>Добавить клиента и администратора</summary><form id="organizationCreateForm"><div class="field-grid settings-grid"><label>Название организации<input name="companyName" required maxlength="180"></label><label>Имя администратора<input name="adminName" required maxlength="150"></label><label>Логин администратора<input name="username" required minlength="3" maxlength="40"></label><label>Пароль администратора<input name="password" type="password" required minlength="10"></label><label>Телефон<input name="phone" type="tel"></label><label>Email<input name="email" type="email"></label><label>Сайт<input name="website" type="url" placeholder="https://"></label><label>Telegram<input name="telegram" type="url" placeholder="https://t.me/"></label><label>WhatsApp<input name="whatsapp" type="url" placeholder="https://wa.me/"></label><label>MAX<input name="max" type="url" placeholder="https://max.ru/"></label><label>VK<input name="vk" type="url" placeholder="https://vk.com/"></label></div><div class="actions"><button type="submit">Создать организацию</button></div><div id="organizationCreateResult" class="result" aria-live="polite"></div></form></details></section>
+<section class="panel" id="userCreationPanel" hidden><div class="toolbar"><div><h3>Создание пользователей</h3><p class="settings-hint">Создатель может добавлять Администраторов и Менеджеров. Менеджеру необходимо указать ID администратора.</p></div><button type="button" class="secondary" id="refreshUsers">Обновить список</button></div>
+<form id="userCreateForm"><div class="field-grid settings-grid">
+<label>Права доступа<select name="role" id="newUserRole"><option value="admin">Администратор</option><option value="manager">Менеджер</option></select></label>
+<label>Имя пользователя<input name="name" required maxlength="150"></label>
+<label>Логин<input name="username" required minlength="3" maxlength="40"></label>
+<label>Пароль<input name="password" type="password" required minlength="10"></label>
+<label id="newUserCompanyField">Название организации<input name="companyName" required maxlength="180" placeholder="Название клиента"></label>
+<label id="newUserAdminField" hidden> ID администратора<select name="adminId" id="newUserAdminId"><option value="">Выберите администратора…</option></select></label>
+</div><div class="actions"><button type="submit">Создать пользователя</button></div><div id="userCreateResult" class="result" aria-live="polite"></div></form>
+<h4>Пользователи проекта</h4><div id="userList" class="collection-list">Загружаем…</div></section>
+<section class="panel" id="collectionsPanel"><div class="toolbar"><h3>Мои подборки</h3><div class="collection-toolbar-actions"><button id="startNewCollection">+ Новая подборка</button><button id="refresh" class="secondary">Обновить список</button></div></div><div class="collection-filters"><div class="collection-filter-row collection-filter-row-top"><label>Создана с<input id="collectionDateFrom" type="date"></label><label>по<input id="collectionDateTo" type="date"></label><label>Название подборки<input id="collectionTitleSearch" type="search" placeholder="Введите название"></label></div><div class="collection-filter-row collection-filter-row-bottom"><label>Клиент (имя, телефон, Email)<input id="collectionClientSearch" type="search" placeholder="Поиск по контактам"></label><button type="button" class="secondary" id="clearCollectionFilters">Сбросить фильтры</button></div></div><div id="collections" class="collection-list">Загружаем…</div><nav id="collectionPagination" class="collection-pagination" aria-label="Страницы подборок" hidden></nav></section>
+<section class="panel" id="editor" hidden><div class="toolbar"><h3 id="formTitle">Новая подборка</h3><button id="new" class="secondary">Новая</button></div>
+<label>Название подборки<input id="title" value="Моя подборка" maxlength="150"></label><label>Клиент подборки<select id="collectionClientSelect"><option value="">Клиент не выбран</option></select></label>
+<label class="template-select-label">Шаблон подборки
+<select id="collectionTemplate">
+<option value="detailed">Универсальный</option>
+<option value="simple">Строгий</option>
+<option value="cards-scroll">Карточки с прокруткой</option>
+<option value="modern" selected>Современный</option>
+</select>
+<small class="settings-hint">Шаблон определяет оформление клиентской страницы.</small>
+</label>
+<section class="template-editor" id="templateEditor">
+ <div class="template-editor-head"><div><h4>Предпросмотр текущего шаблона</h4><p id="templateCurrentName">Современный</p></div><span class="template-editor-tag">Живой просмотр</span></div>
+ <div class="template-editor-grid">
+  <div id="templatePreview" class="template-preview preview-modern" aria-live="polite">
+   <div class="tp-heading"><strong id="tpCollectionTitle">Моя подборка</strong><span>Tour Selection</span></div>
+   <div class="tp-offer"><div class="tp-photo" id="tpPhoto">Фото объекта</div><div class="tp-body"><h5 id="tpHotel">Название объекта</h5><p id="tpLocation"></p><p id="tpDescription">Описание объекта появится здесь</p><div class="tp-price" id="tpPrice">Стоимость</div></div></div>
+  </div>
+  <div class="template-preview-fields"><strong>Редактировать поля предпросмотра</strong>
+   <label>Название объекта<input id="previewHotel" placeholder="Название отеля"></label>
+   <label>Адрес<input id="previewLocation" placeholder="Регион, город"></label>
+   <label>Стоимость<input id="previewPrice" placeholder="Стоимость"></label>
+   <label>Описание<textarea id="previewDescription" rows="3" placeholder="Описание объекта"></textarea></label>
+   <small>Изменения применяются к первому предложению и сохраняются вместе с подборкой.</small>
+  </div>
+ </div>
+</section>
+<div class="offers-toolbar"><h3>Предложения <span id="offerCount">0</span></h3><button id="addOffer" class="secondary">+ Добавить предложение</button></div>
+<div id="offerCards" class="offer-editor-list"></div><div class="actions"><button id="create">Создать подборку</button><button id="save" class="secondary" hidden>Сохранить изменения</button><a id="backToCabinetBottom" class="secondary back-bottom" href="/cabinet" hidden>← К подборкам</a></div><div id="result" class="result"></div></section>
+<p class="note">Tour Selection · защищённый кабинет с ролями.</p></main><script src="/cabinet.js"></script></body></html>

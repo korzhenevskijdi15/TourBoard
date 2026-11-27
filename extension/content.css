@@ -1,0 +1,13 @@
+.tsp-add-button {
+  display: inline-flex !important; align-items: center; justify-content: center;
+  margin: 6px 0 6px 10px !important; padding: 8px 12px !important;
+  border: 1px solid #1769e0 !important; border-radius: 8px !important;
+  background: #fff !important; color: #1769e0 !important;
+  font: 600 13px/1.2 Arial, sans-serif !important; cursor: pointer !important;
+  box-shadow: 0 1px 3px rgba(20,50,90,.12) !important; position: relative !important;
+  z-index: 5 !important; white-space: nowrap !important;
+}
+.tsp-add-button:hover { background: #eef5ff !important; }
+.tsp-add-button.is-added { color: #167a38 !important; border-color: #167a38 !important; background: #f0fff4 !important; }
+
+.tsp-add-button.tsp-error{background:#b42318!important;border-color:#b42318!important;color:#fff!important}
