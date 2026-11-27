@@ -1,6 +1,6 @@
 {
   "name": "tour-selection-server",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "scripts": {
     "start": "node server.js"
   },
