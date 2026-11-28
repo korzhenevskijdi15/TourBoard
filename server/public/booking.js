@@ -12,7 +12,7 @@ function renderOffer(collection,offer){
  const guests=[offer.adults?text(offer.adults)+" взрослых":"",offer.children?text(offer.children)+" детей":""].filter(Boolean).join(" · ")||"Не указано";
  const price=text(offer.price,"Цена уточняется");
  const image=text(offer.customImage||offer.image||offer.sourceImage,"");
- const location=text(offer.location,"");
+ const location=text(offer.address||offer.location,"");
  const rows=[
   ["Адрес",location],
   ["Дата заезда",date],
