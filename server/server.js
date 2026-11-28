@@ -64,7 +64,10 @@ function validateUsername(name){return typeof name==="string"&&((/^[a-zA-Z0-9_.-
 function validSettings(input,keys,base){const out={...base};for(const k of keys){const value=String(input[k]??out[k]??"").trim();out[k]=k==="managerPhoto"?value.slice(0,700000):value.slice(0,500)}for(const k of ["telegram","whatsapp","max","vk","logo","website"]){if(out[k]&&!/^https?:\/\//i.test(out[k]))throw Error(`Для поля ${k} укажите ссылку, начинающуюся с http:// или https://`)}if(out.managerPhoto&&!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(out.managerPhoto))throw Error("Фото менеджера должно быть изображением JPEG, PNG или WebP");if(out.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email))throw Error("Проверьте email");return out}
 function migrateLegacy(db,adminId){
  db.collections=db.collections||{};
- for(const item of Object.values(db.collections)){if(!item.ownerId){item.ownerId=adminId;item.adminId=adminId;item.managerId=null}}
+ for(const item of Object.values(db.collections)){
+  if(!item.ownerId){item.ownerId=adminId;item.adminId=adminId;item.managerId=null}
+  if(!item.organizationId)item.organizationId=item.adminId||adminId;
+ }
  if(!db.users[adminId].settings){const legacy=db.settings||{};db.users[adminId].settings=Object.fromEntries(personalKeys.map(k=>[k,legacy[k]??""]))}
  if(!db.organization){const legacy=db.settings||{};db.organization={...defaultOrganization,...Object.fromEntries(organizationKeys.map(k=>[k,legacy[k]??defaultOrganization[k]]))}}
  ensureOrganization(db,adminId,db.organization);
@@ -83,7 +86,18 @@ function publicSettings(db,item){
  }
  return result;
 }
-function collectionOwnerAllowed(user,item){return user.role==="creator"||user.role==="admin"||item.ownerId===user.id||(!item.ownerId&&item.adminId===user.id)}
+function collectionOrganizationId(db,item){
+ if(item.organizationId)return item.organizationId;
+ if(item.adminId)return item.adminId;
+ const owner=db.users?.[item.ownerId];return owner?.role==="admin"?orgIdFor(owner):(owner?.adminId||null);
+}
+function collectionOwnerAllowed(user,item,db){
+ if(user.role==="creator")return true;
+ const organizationId=orgIdFor(user.role==="admin"?user:(db.users?.[user.adminId]||user));
+ if(collectionOrganizationId(db,item)!==organizationId)return false;
+ if(user.role==="admin")return true;
+ return user.role==="manager"&&(item.ownerId===user.id||(!item.ownerId&&item.adminId===user.adminId));
+}
 function safeCollectionList(item,db){const owner=db.users?.[item.ownerId],client=db.clients?.[item.clientId];return {id:item.id,title:item.title,offerCount:(item.offers||[]).length,createdAt:item.createdAt,updatedAt:item.updatedAt,managerId:item.managerId||null,managerName:owner?.role==="manager"?(owner.name||owner.username):"Администратор",clientId:item.clientId||null,client:client?{id:client.id,name:client.name||"",phone:client.phone||"",email:client.email||""}:null}}
 function validateCollectionClient(db,user,clientId){if(!clientId)return null;const adminId=user.role==="admin"?user.id:user.adminId,client=db.clients?.[clientId];if(!client||client.adminId!==adminId)throw Error("Выберите клиента из списка вашей организации");return clientId}
 const app=http.createServer(async(req,res)=>{
@@ -304,18 +318,19 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
  }
  if(req.method==="GET"&&u.pathname==="/api/collections"){
   const user=requireUser(req,res);if(!user)return;
-  const items=Object.values(db.collections||{}).filter(x=>user.role==="creator"||user.role==="admin"||x.ownerId===user.id).sort((a,b)=>String(b.updatedAt||b.createdAt).localeCompare(String(a.updatedAt||a.createdAt)));
+  const organizationId=orgIdFor(user.role==="admin"?user:(db.users?.[user.adminId]||user));
+  const items=Object.values(db.collections||{}).filter(x=>user.role==="creator"||(collectionOrganizationId(db,x)===organizationId&&(user.role==="admin"||x.ownerId===user.id))).sort((a,b)=>String(b.updatedAt||b.createdAt).localeCompare(String(a.updatedAt||a.createdAt)));
   return send(res,200,items.map(item=>safeCollectionList(item,db)))
  }
  if(req.method==="DELETE"&&u.pathname.startsWith("/api/collections/")){
   const user=requireUser(req,res);if(!user)return;const id=decodeURIComponent(u.pathname.split("/").pop()),item=db.collections[id];
-  if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item))return send(res,403,{error:"Нет прав на эту подборку"});
+  if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item,db))return send(res,403,{error:"Нет прав на эту подборку"});
   delete db.collections[id];write(db);return send(res,200,{ok:true});
  }
  if(req.method==="POST"&&u.pathname==="/api/collections"){
   const user=requireUser(req,res);if(!user)return;
   try{const input=await body(req),id=crypto.randomBytes(6).toString("hex"),allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern","travel"];
-   if(["admin","manager"].includes(user.role)&&!input.clientId)return send(res,400,{error:"Выберите клиента для подборки"});const clientId=validateCollectionClient(db,user,input.clientId);const item={id,title:String(input.title||"Моя подборка").slice(0,150),clientId,template:allowedTemplates.includes(input.template)?input.template:"modern",offers:Array.isArray(input.offers)?input.offers:[],ownerId:user.id,adminId:user.role==="admin"?user.id:user.adminId,managerId:user.managerId||null,createdBy:user.id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+   if(["admin","manager"].includes(user.role)&&!input.clientId)return send(res,400,{error:"Выберите клиента для подборки"});const clientId=validateCollectionClient(db,user,input.clientId);const item={id,title:String(input.title||"Моя подборка").slice(0,150),clientId,template:allowedTemplates.includes(input.template)?input.template:"modern",offers:Array.isArray(input.offers)?input.offers:[],ownerId:user.id,adminId:user.role==="admin"?user.id:user.adminId,organizationId:orgIdFor(user.role==="admin"?user:(db.users?.[user.adminId]||user)),managerId:user.managerId||null,createdBy:user.id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
    db.collections=db.collections||{};db.collections[id]=item;write(db);return send(res,201,{id,url:`${PUBLIC_URL}/c/${id}`,collection:item})
   }catch(e){return send(res,400,{error:e.message})}
  }
@@ -324,7 +339,7 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
  }
  if(req.method==="PATCH"&&u.pathname.startsWith("/api/collections/")&&u.pathname!=="/api/collections/"){
   const user=requireUser(req,res);if(!user)return;if(!["admin","manager"].includes(user.role))return send(res,403,{error:"Изменять шаблон могут Менеджер и Администратор"});
-  const id=decodeURIComponent(u.pathname.split("/").pop()),item=db.collections?.[id];if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item))return send(res,403,{error:"Нет прав на эту подборку"});
+  const id=decodeURIComponent(u.pathname.split("/").pop()),item=db.collections?.[id];if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item,db))return send(res,403,{error:"Нет прав на эту подборку"});
   try{const input=await body(req),allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern","travel"];if(!allowedTemplates.includes(input.template))return send(res,400,{error:"Неизвестный шаблон"});item.template=input.template;item.updatedAt=new Date().toISOString();write(db);return send(res,200,{ok:true,template:item.template,updatedAt:item.updatedAt})}catch(e){return send(res,400,{error:e.message})}
  }
  if(req.method==="POST"&&u.pathname.startsWith("/api/collections/")){
