@@ -330,8 +330,8 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
    const organization=orgSettingsFor(db,admin),to=String(organization.email||"").trim();
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to))return send(res,400,{error:"У организации не указан корректный Email. Обратитесь к менеджеру"});
    const client=db.clients?.[item.clientId]||{},owner=db.users?.[item.ownerId];
-   const manager=owner?.role==="manager"?owner:(item.managerId?Object.values(db.users||{}).find(x=>x.managerId===item.managerId&&x.role==="manager"):null);
-   const managerName=manager?(manager.name||manager.username):"Администратор";
+   const manager=owner?.role==="manager"?owner:owner?.role==="admin"?owner:(item.managerId?Object.values(db.users||{}).find(x=>x.managerId===item.managerId&&x.role==="manager"):admin);
+   const managerName=manager?(manager.name||manager.username||"Администратор"):"Администратор";
    const val=v=>String(v??"").trim()||"Не указано";
    const guests=[offer.adults?val(offer.adults)+" взрослых":"",offer.children?val(offer.children)+" детей":""].filter(Boolean).join(" · ")||"Не указано";
    const booking=[["Объект",val(offer.hotel||offer.name)],["Адрес",val(offer.address||offer.location)],["Дата заезда",val(offer.date)],["Количество ночей",offer.nights?val(offer.nights)+" ночей":"Не указано"],["Состав гостей",guests],["Номер",val(offer.room)],["Питание",val(offer.meal)],["Цена",val(offer.price)]];
