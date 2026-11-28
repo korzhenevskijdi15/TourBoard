@@ -1117,3 +1117,15 @@ header{gap:14px;align-items:center}
  .client-template-travel .travel-object-price .client-cta{display:block;width:100%;box-sizing:border-box;text-align:center;white-space:normal;padding:15px 18px}
  .client-template-travel .travel-manager-comment{padding:16px;margin-top:18px;font-size:15px}
 }
+
+/* «Морской бриз»: шапка и метаданные только на странице подборки */
+.client-template-travel .client-hero-meta.cards-hero-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;box-sizing:border-box}
+.client-template-travel .client-hero-meta .travel-meta-arrival{margin-right:auto;text-align:left}
+.client-template-travel .client-hero-meta .travel-meta-nights{margin-left:auto;text-align:right}
+.client-template-travel .client-offers-heading{display:none!important}
+.client-template-travel .travel-object-detail strong{white-space:normal}
+@media(max-width:640px){
+ .client-template-travel .client-hero-meta.cards-hero-meta{flex-direction:row;flex-wrap:nowrap}
+ .client-template-travel .client-hero-meta .travel-meta-arrival{flex:1 1 auto}
+ .client-template-travel .client-hero-meta .travel-meta-nights{flex:0 0 auto}
+}

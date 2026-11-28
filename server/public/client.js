@@ -83,8 +83,9 @@ function travelOffer(o,i){
  const detail=o.comment?'<section class="travel-manager-comment"><strong>Комментарий менеджера</strong><div>'+esc(o.comment)+'</div></section>':"";
  const date=value(o.date),meal=value(o.meal),room=value(o.room),nights=value(o.nights);
  const nightCount=Number.parseInt(nights,10),nightWord=nightCount===1?"ночь":nightCount>=2&&nightCount<=4?"ночи":"ночей";
- const dates=date?'<div class="travel-object-detail"><span>Даты</span><strong>'+esc(date)+(nights?'<br>'+esc(nights)+' '+nightWord+(o.flightIncluded==="yes"?" · С перелётом":o.flightIncluded==="no"?" · Без перелёта":""):"")+'</strong></div>':"";
- const mealRow=meal?'<div class="travel-object-detail"><span>Питание</span><strong>'+esc(meal)+'</strong></div>':"";
+ const dates=date?'<div class="travel-object-detail"><span>Даты</span><strong>'+esc(date)+(nights?' на '+esc(nights)+' '+nightWord+(o.flightIncluded==="yes"?" · С перелётом":o.flightIncluded==="no"?" · Без перелёта":""):"")+'</strong></div>':"";
+ const cleanMeal=meal.replace(/\s*\binfo\b[\s\S]*$/i,"").replace(/[\s|,;·-]+$/,"").trim();
+ const mealRow=cleanMeal?'<div class="travel-object-detail"><span>Питание</span><strong>'+esc(cleanMeal)+'</strong></div>':"";
  const roomRow=room?'<div class="travel-object-detail"><span>Номер</span><strong>'+esc(room)+'</strong></div>':"";
  const priceCaption=(nights?'за '+esc(nights)+' ночей':'Стоимость проживания')+(o.adults?', '+esc(o.adults)+' взрослых':'')+(o.children?' + '+esc(o.children)+' детей':'');
  return '<article class="client-offer travel-object-card">'+
@@ -726,7 +727,7 @@ function render(c){
  const nightCount=Number.parseInt(first.nights,10);
  const nightWord=Number.isFinite(nightCount)?(nightCount%10===1&&nightCount%100!==11?"ночь":nightCount%10>=2&&nightCount%10<=4&&(nightCount%100<12||nightCount%100>14)?"ночи":"ночей"):"ночей";
  const travelMeta=[arrival?{kind:"arrival",text:`🗓️ Заезд: ${arrival}`} : null,first.nights?{kind:"nights",text:`🌙 ${first.nights} ${nightWord}`} : null].filter(Boolean);
- const offersHeading=template==="simple" ? "" : template==="cards-scroll"
+ const offersHeading=(template==="simple"||template==="travel") ? "" : template==="cards-scroll"
   ? `<div class="client-offers-heading"><div><h2>Предложения для вас</h2><span class="cards-scroll-subtitle">Листайте вправо — все варианты ниже</span></div><div class="cards-scroll-controls"><button type="button" class="cards-scroll-arrow" id="offersPrev" aria-label="Предыдущие предложения">←</button><button type="button" class="cards-scroll-arrow" id="offersNext" aria-label="Следующие предложения">→</button></div></div>`
   : `<div class="client-offers-heading"><h2>Предложения для вас</h2><span>${offers.length} вариантов</span></div>`;
  const managerIntro=`<section class="client-manager-intro ${managerSettings.managerPhoto?"has-manager-photo":"no-manager-photo"}">
