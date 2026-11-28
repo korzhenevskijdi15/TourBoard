@@ -38,5 +38,35 @@ async function load(){
   renderOffer(collection,offer);
  }catch(error){summary.innerHTML='<div class="booking-error">'+esc(error.message||"Не удалось загрузить вариант.")+'</div>';}
 }
-document.getElementById("bookingRequestForm").addEventListener("submit",event=>event.preventDefault());
+const bookingForm=document.getElementById("bookingRequestForm");
+const bookingSubmit=bookingForm.querySelector('button[type="submit"]');
+const bookingStatus=document.createElement("p");
+bookingStatus.className="booking-form-note";
+bookingStatus.setAttribute("role","status");
+bookingStatus.setAttribute("aria-live","polite");
+bookingStatus.hidden=true;
+bookingForm.appendChild(bookingStatus);
+bookingForm.addEventListener("submit",async event=>{
+ event.preventDefault();
+ if(!bookingForm.reportValidity())return;
+ bookingSubmit.disabled=true;
+ bookingSubmit.textContent="Отправляем запрос…";
+ bookingStatus.hidden=true;
+ try{
+  const response=await fetch("/api/booking-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({collectionId,offerIndex,name:document.getElementById("bookingName").value.trim(),phone:document.getElementById("bookingPhone").value.trim()})});
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(result.error||"Не удалось отправить запрос");
+  bookingStatus.textContent="Запрос отправлен! Организация получила ваши контактные данные.";
+  bookingStatus.style.color="#18734b";
+  bookingStatus.hidden=false;
+  bookingForm.reset();
+ }catch(error){
+  bookingStatus.textContent=error.message||"Ошибка отправки. Попробуйте ещё раз.";
+  bookingStatus.style.color="#b54444";
+  bookingStatus.hidden=false;
+ }finally{
+  bookingSubmit.disabled=false;
+  bookingSubmit.innerHTML='Отправить запрос <span aria-hidden="true">→</span>';
+ }
+});
 load();
