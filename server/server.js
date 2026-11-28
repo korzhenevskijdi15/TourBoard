@@ -187,6 +187,20 @@ const app=http.createServer(async(req,res)=>{
    const stored=db.users[user.id];stored.username=username;if(newPassword)stored.passwordHash=await passwordHash(newPassword);write(db);for(const [token,session] of sessions){if(session.userId===user.id)sessions.delete(token)}setSession(res,stored);return send(res,200,{ok:true,user:safeUser(stored)});
   }catch(e){return send(res,400,{error:e.message})}
  }
+ if(req.method==="POST"&&u.pathname==="/api/account/password"){
+  const user=requireUser(req,res);if(!user)return;
+  if(user.role==="creator")return send(res,403,{error:"Для Создателя изменение пароля доступно в настройках учётной записи"});
+  try{
+   const input=await body(req),currentPassword=String(input.currentPassword||""),newPassword=String(input.newPassword||""),confirmPassword=String(input.confirmPassword||"");
+   if(!(await passwordVerify(currentPassword,user.passwordHash)))return send(res,401,{error:"Текущий пароль указан неверно"});
+   if(!passwordValid(newPassword))return send(res,400,{error:"Новый пароль должен содержать от 10 до 200 символов"});
+   if(newPassword!==confirmPassword)return send(res,400,{error:"Новые пароли не совпадают"});
+   const stored=db.users?.[user.id];if(!stored)return send(res,404,{error:"Пользователь не найден"});
+   stored.passwordHash=await passwordHash(newPassword);write(db);
+   for(const [token,session] of sessions){if(session.userId===user.id)sessions.delete(token)}
+   setSession(res,stored);return send(res,200,{ok:true});
+  }catch(e){return send(res,400,{error:e.message})}
+ }
  if(req.method==="GET"&&u.pathname==="/api/settings"){
   const user=requireUser(req,res);if(!user)return;
   const settings={...Object.fromEntries(personalKeys.map(k=>[k,""])),...(user.settings||{})};
