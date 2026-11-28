@@ -288,7 +288,7 @@ const app=http.createServer(async(req,res)=>{
  }
  if(req.method==="POST"&&u.pathname==="/api/collections"){
   const user=requireUser(req,res);if(!user)return;
-  try{const input=await body(req),id=crypto.randomBytes(6).toString("hex"),allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern"];
+  try{const input=await body(req),id=crypto.randomBytes(6).toString("hex"),allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern","travel"];
    if(["admin","manager"].includes(user.role)&&!input.clientId)return send(res,400,{error:"Выберите клиента для подборки"});const clientId=validateCollectionClient(db,user,input.clientId);const item={id,title:String(input.title||"Моя подборка").slice(0,150),clientId,template:allowedTemplates.includes(input.template)?input.template:"modern",offers:Array.isArray(input.offers)?input.offers:[],ownerId:user.id,adminId:user.role==="admin"?user.id:user.adminId,managerId:user.managerId||null,createdBy:user.id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
    db.collections=db.collections||{};db.collections[id]=item;write(db);return send(res,201,{id,url:`${PUBLIC_URL}/c/${id}`,collection:item})
   }catch(e){return send(res,400,{error:e.message})}
@@ -299,12 +299,12 @@ const app=http.createServer(async(req,res)=>{
  if(req.method==="PATCH"&&u.pathname.startsWith("/api/collections/")&&u.pathname!=="/api/collections/"){
   const user=requireUser(req,res);if(!user)return;if(!["admin","manager"].includes(user.role))return send(res,403,{error:"Изменять шаблон могут Менеджер и Администратор"});
   const id=decodeURIComponent(u.pathname.split("/").pop()),item=db.collections?.[id];if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item))return send(res,403,{error:"Нет прав на эту подборку"});
-  try{const input=await body(req),allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern"];if(!allowedTemplates.includes(input.template))return send(res,400,{error:"Неизвестный шаблон"});item.template=input.template;item.updatedAt=new Date().toISOString();write(db);return send(res,200,{ok:true,template:item.template,updatedAt:item.updatedAt})}catch(e){return send(res,400,{error:e.message})}
+  try{const input=await body(req),allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern","travel"];if(!allowedTemplates.includes(input.template))return send(res,400,{error:"Неизвестный шаблон"});item.template=input.template;item.updatedAt=new Date().toISOString();write(db);return send(res,200,{ok:true,template:item.template,updatedAt:item.updatedAt})}catch(e){return send(res,400,{error:e.message})}
  }
  if(req.method==="POST"&&u.pathname.startsWith("/api/collections/")){
   const user=requireUser(req,res);if(!user)return;const id=decodeURIComponent(u.pathname.split("/").pop());
   try{const input=await body(req),item=db.collections?.[id];if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item))return send(res,403,{error:"Нет прав на эту подборку"});
-   item.title=String(input.title||item.title).slice(0,150);if(Object.prototype.hasOwnProperty.call(input,"clientId")){if(["admin","manager"].includes(user.role)&&!input.clientId)return send(res,400,{error:"Выберите клиента для подборки"});item.clientId=validateCollectionClient(db,user,input.clientId);}const allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern"];if(allowedTemplates.includes(input.template))item.template=input.template;item.offers=Array.isArray(input.offers)?input.offers:item.offers;item.updatedAt=new Date().toISOString();write(db);return send(res,200,item)
+   item.title=String(input.title||item.title).slice(0,150);if(Object.prototype.hasOwnProperty.call(input,"clientId")){if(["admin","manager"].includes(user.role)&&!input.clientId)return send(res,400,{error:"Выберите клиента для подборки"});item.clientId=validateCollectionClient(db,user,input.clientId);}const allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern","travel"];if(allowedTemplates.includes(input.template))item.template=input.template;item.offers=Array.isArray(input.offers)?input.offers:item.offers;item.updatedAt=new Date().toISOString();write(db);return send(res,200,item)
   }catch(e){return send(res,400,{error:e.message})}
  }
  if(req.method==="GET"&&(u.pathname==="/"||u.pathname==="/cabinet"||u.pathname==="/edit"||u.pathname.startsWith("/edit/"))){
