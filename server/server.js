@@ -354,6 +354,7 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
  }
  if(req.method==="GET"&&u.pathname==="/login")return sendPage(res,"login.html");
  if(req.method==="GET"&&u.pathname==="/setup")return sendPage(res,Object.values(db.users||{}).some(x=>x.role==="creator")?"login.html":"setup.html");
+ if(req.method==="GET"&&u.pathname==="/booking")return sendPage(res,"booking.html");
  if(req.method==="GET"&&u.pathname==="/social-templates")return sendPage(res,"social-templates.html");
  if(req.method==="GET"&&u.pathname.startsWith("/c/"))return sendPage(res,"client.html");
  let file=u.pathname.replace(/^\/+/,"");const full=path.resolve(__dirname,"public",file);
