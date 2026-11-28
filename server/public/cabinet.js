@@ -145,12 +145,12 @@ $("creatorAccountForm").addEventListener("submit",async e=>{
  catch(err){result.textContent="Ошибка: "+err.message}
 });
 $("passwordChangeForm").addEventListener("submit",async e=>{
- e.preventDefault();const f=new FormData(e.currentTarget),currentPassword=String(f.get("currentPassword")||""),newPassword=String(f.get("newPassword")||""),confirmPassword=String(f.get("confirmPassword")||""),result=$("passwordChangeResult");
+ e.preventDefault();const form=e.currentTarget,f=new FormData(form),currentPassword=String(f.get("currentPassword")||""),newPassword=String(f.get("newPassword")||""),confirmPassword=String(f.get("confirmPassword")||""),result=$("passwordChangeResult");
  result.textContent="";
  if(newPassword!==confirmPassword){result.textContent="Новые пароли не совпадают.";return}
  if(newPassword.length<10||newPassword.length>200){result.textContent="Новый пароль должен содержать от 10 до 200 символов.";return}
  result.textContent="Изменяем пароль…";
- try{const r=await fetch("/api/account/password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({currentPassword,newPassword,confirmPassword})}),d=await r.json();if(!r.ok)throw Error(d.error||"Не удалось изменить пароль");result.textContent="Пароль успешно изменён.";e.currentTarget.reset()}
+ try{const r=await fetch("/api/account/password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({currentPassword,newPassword,confirmPassword})}),d=await r.json();if(!r.ok)throw Error(d.error||"Не удалось изменить пароль");result.textContent="Пароль успешно изменён.";form.reset()}
  catch(err){result.textContent="Ошибка: "+err.message}
 });
 const orgKeys=["companyName","logo","phone","email","telegram","whatsapp","max","vk","address","website"];
