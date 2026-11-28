@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Запрос на бронирование — TourBoard</title>
+<link rel="stylesheet" href="/booking.css">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body class="booking-page">
+<header class="booking-header">
+ <a class="booking-brand" href="/"><span class="booking-brand-mark">T</span><span>TourBoard</span></a>
+ <span class="booking-header-caption">Запрос на бронирование</span>
+</header>
+<main class="booking-layout">
+ <section class="booking-form-panel">
+  <div class="booking-eyebrow">ОСТАЛСЯ ОДИН ШАГ</div>
+  <h1>Оставьте контактные данные</h1>
+  <p class="booking-lead">Заполните имя и телефон, чтобы менеджер мог связаться с вами по выбранному варианту.</p>
+  <form id="bookingRequestForm">
+   <label for="bookingName">Имя <span aria-hidden="true">*</span></label>
+   <input id="bookingName" name="name" type="text" autocomplete="name" maxlength="150" placeholder="Как к вам обращаться" required>
+   <label for="bookingPhone">Телефон <span aria-hidden="true">*</span></label>
+   <input id="bookingPhone" name="phone" type="tel" autocomplete="tel" maxlength="40" placeholder="+7 ___ ___-__-__" required>
+   <button type="submit" class="booking-submit">Отправить запрос <span aria-hidden="true">→</span></button>
+   <p class="booking-form-note">Поля, отмеченные звёздочкой, обязательны для заполнения.</p>
+  </form>
+ </section>
+ <aside class="booking-summary-panel">
+  <div class="booking-summary-heading"><div><span class="booking-eyebrow">ВАШ ВЫБРАННЫЙ ВАРИАНТ</span><h2>Информация об объекте</h2></div><span class="booking-lock" aria-label="Данные только для просмотра">▣</span></div>
+  <div id="bookingSummary" class="booking-summary">
+   <div class="booking-loading">Загружаем информацию о выбранном объекте…</div>
+  </div>
+  <p class="booking-readonly-note"><span aria-hidden="true">🔒</span> Информация о варианте доступна только для просмотра.</p>
+ </aside>
+</main>
+<footer class="booking-footer">TourBoard · Подборки для вашего отдыха</footer>
+<script src="/booking.js?v=1.0.0"></script>
+</body>
+</html>
