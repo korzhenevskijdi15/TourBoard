@@ -746,6 +746,7 @@ function render(c){
  ${offersHeading}
  <section class="client-offers ${template==="cards-scroll"?"client-offers-scroll":""}">${offers.length?offers.map(template==="cards-scroll"?cardsScrollOffer:template==="simple"?strictOffer:template==="detailed"?universalOffer:template==="travel"?travelOffer:offerCard).join(""):'<div class="client-empty">В подборке пока нет предложений.</div>'}</section>
  <section class="client-last-cta"><h2>Не нашли подходящий вариант?</h2><p>Напишите менеджеру — подберём отдых под ваши пожелания.</p><a href="${primaryContact()}" target="_blank" rel="noopener">Связаться с менеджером</a></section>`;
+ app.querySelectorAll(".client-offer").forEach((article,index)=>{const button=article.querySelector(".client-cta");if(button){button.href=location.origin+"/booking?collectionId="+encodeURIComponent(id)+"&offerIndex="+index;button.target="_blank";button.rel="noopener noreferrer";}});
  if(template!=="cards-scroll"){
   app.querySelectorAll(".client-description-toggle").forEach(button=>button.addEventListener("click",()=>{
    const paragraph=button.previousElementSibling,full=paragraph.dataset.full,expanded=button.getAttribute("aria-expanded")==="true";
@@ -782,5 +783,5 @@ app.addEventListener("click",event=>{
  const offerIndex=Array.from(app.querySelectorAll(".client-offer")).indexOf(article);
  if(offerIndex<0)return;
  const target="/booking?collectionId="+encodeURIComponent(id)+"&offerIndex="+offerIndex;
- window.location.href=target;
+ window.open(target,"_blank","noopener,noreferrer");
 });
