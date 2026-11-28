@@ -181,7 +181,7 @@ if(req.method==="DELETE"&&managerDeleteMatch){
  const managerId=decodeURIComponent(managerDeleteMatch[1]),manager=db.users?.[managerId];
  if(!manager||manager.role!=="manager"||manager.adminId!==admin.id)return send(res,404,{error:"Менеджер не найден"});
  for(const item of Object.values(db.collections||{})){
-  if(item.ownerId===manager.id){item.ownerId=admin.id;item.createdBy=admin.id;item.adminId=admin.id;item.managerId=null}
+  if(item.ownerId===manager.id){item.ownerId=admin.id;item.createdBy=admin.id;item.adminId=admin.id;item.organizationId=item.organizationId||orgIdFor(admin);item.managerId=null}
  }
  delete db.users[manager.id];
  for(const [token,session] of sessions){if(session.userId===manager.id)sessions.delete(token)}
