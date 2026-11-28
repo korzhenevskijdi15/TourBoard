@@ -170,9 +170,17 @@ async function loadManagers(){
  const box=$("managerList");box.textContent="Загружаем список…";
  try{const r=await fetch("/api/managers"),list=await r.json();if(!r.ok)throw Error(list.error||"Ошибка загрузки");
   if(!list.length){box.innerHTML='<div class="empty">Менеджеры ещё не созданы.</div>';return}
-  box.innerHTML=list.map(m=>`<div class="manager-account-row"><div><strong>${esc(m.name||m.username)}</strong><small>Логин: ${esc(m.username)} · ID менеджера: ${esc(m.managerId)} · ID пользователя: ${esc(m.id)}</small><small>Создан: ${new Date(m.createdAt).toLocaleString("ru-RU")}</small></div><span class="meta">Привязан к администратору</span></div>`).join("");
+  box.innerHTML=list.map(m=>`<div class="manager-account-row"><div><strong>${esc(m.name||m.username)}</strong><small>Логин: ${esc(m.username)} · ID менеджера: ${esc(m.managerId)} · ID пользователя: ${esc(m.id)}</small><small>Создан: ${new Date(m.createdAt).toLocaleString("ru-RU")}</small></div><div class="manager-account-actions"><span class="meta">Привязан к администратору</span><button type="button" class="secondary manager-delete-button" data-manager-id="${esc(m.id)}" data-manager-name="${esc(m.name||m.username)}">Удалить</button></div></div>`).join("");
  }catch(e){box.textContent="Не удалось загрузить менеджеров: "+e.message}
 }
+$("managerList").addEventListener("click",async e=>{
+ const button=e.target.closest(".manager-delete-button");if(!button)return;
+ const managerName=button.dataset.managerName||"этого менеджера";
+ if(!confirm(`Удалить менеджера «${managerName}»? Его подборки будут переданы вам и останутся доступными.`))return;
+ button.disabled=true;button.textContent="Удаляем…";
+ try{const r=await fetch("/api/managers/"+encodeURIComponent(button.dataset.managerId),{method:"DELETE"}),d=await r.json();if(!r.ok)throw Error(d.error||"Не удалось удалить менеджера");await loadManagers()}
+ catch(err){button.disabled=false;button.textContent="Удалить";alert("Ошибка: "+err.message)}
+});
 $("refreshManagers").addEventListener("click",loadManagers);
 $("managerCreateForm").addEventListener("submit",async e=>{
  e.preventDefault();const f=new FormData(e.currentTarget),result=$("managerCreateResult");result.textContent="Создаём менеджера…";
