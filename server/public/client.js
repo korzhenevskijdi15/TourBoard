@@ -77,6 +77,25 @@ function offerCard(o,i){
  </article>`;
 }
 
+function travelOffer(o,i){
+ const image=value(o.customImage||o.image||o.sourceImage),hotel=value(o.hotel,"Вариант размещения"),description=value(o.description),price=value(o.price,"Цена уточняется");
+ const descriptionExcerpt=description.length>360?description.slice(0,357).trimEnd()+"…":description;
+ const detail=o.comment?'<section class="travel-manager-comment"><strong>Комментарий менеджера</strong><div>'+esc(o.comment)+'</div></section>':"";
+ const date=value(o.date),meal=value(o.meal),room=value(o.room),nights=value(o.nights);
+ const nightCount=Number.parseInt(nights,10),nightWord=nightCount===1?"ночь":nightCount>=2&&nightCount<=4?"ночи":"ночей";
+ const dates=date?'<div class="travel-object-detail"><span>Даты</span><strong>'+esc(date)+(nights?'<br>'+esc(nights)+' '+nightWord+(o.flightIncluded==="yes"?" · С перелётом":o.flightIncluded==="no"?" · Без перелёта":""):"")+'</strong></div>':"";
+ const mealRow=meal?'<div class="travel-object-detail"><span>Питание</span><strong>'+esc(meal)+'</strong></div>':"";
+ const roomRow=room?'<div class="travel-object-detail"><span>Номер</span><strong>'+esc(room)+'</strong></div>':"";
+ const priceCaption=(nights?'за '+esc(nights)+' ночей':'Стоимость проживания')+(o.adults?', '+esc(o.adults)+' взрослых':'')+(o.children?' + '+esc(o.children)+' детей':'');
+ return '<article class="client-offer travel-object-card">'+
+ (image?'<div class="client-photo-wrap travel-object-photo"><a class="client-object-link client-photo-link" href="'+esc(objectDescriptionUrl(o))+'" target="_blank" rel="noopener"><img class="client-photo" src="'+esc(image)+'" alt="'+esc(hotel)+'" loading="'+(i>0?"lazy":"eager")+'" onerror="this.closest(\'.client-photo-wrap\').classList.add(\'image-error\');this.style.display=\'none\'"></a><div class="client-photo-fallback">Фото отеля</div></div>':"")+
+ '<div class="client-offer-body travel-object-body"><div class="client-offer-title-row"><h2>'+objectTitleLink(o,hotel)+'</h2></div>'+
+ (o.location?'<div class="client-location">'+esc(o.location)+'</div>':"")+
+ (description?'<p class="client-description travel-object-description" data-full="'+esc(description)+'">'+esc(descriptionExcerpt)+'</p>':"")+
+ '<div class="travel-object-details">'+dates+mealRow+roomRow+'</div>'+
+ '<div class="client-price-panel travel-object-price"><div class="client-price-block"><div class="client-price">'+esc(price)+'</div><div class="client-price-caption">'+priceCaption+'</div></div><a class="client-cta" href="'+primaryContact()+'" target="_blank" rel="noopener">Забронировать</a></div>'+
+ detail+'</div></article>';
+}
 function universalOffer(o,i){
  const image=value(o.customImage||o.image||o.sourceImage),hotel=value(o.hotel,"Вариант размещения"),description=value(o.description);
  const price=value(o.price,"Цена уточняется"),locationText=value(o.location),nights=value(o.nights);
@@ -722,7 +741,7 @@ function render(c){
  </section>
  ${managerIntro}
  ${offersHeading}
- <section class="client-offers ${template==="cards-scroll"?"client-offers-scroll":""}">${offers.length?offers.map(template==="cards-scroll"?cardsScrollOffer:template==="simple"?strictOffer:template==="detailed"?universalOffer:offerCard).join(""):'<div class="client-empty">В подборке пока нет предложений.</div>'}</section>
+ <section class="client-offers ${template==="cards-scroll"?"client-offers-scroll":""}">${offers.length?offers.map(template==="cards-scroll"?cardsScrollOffer:template==="simple"?strictOffer:template==="detailed"?universalOffer:template==="travel"?travelOffer:offerCard).join(""):'<div class="client-empty">В подборке пока нет предложений.</div>'}</section>
  <section class="client-last-cta"><h2>Не нашли подходящий вариант?</h2><p>Напишите менеджеру — подберём отдых под ваши пожелания.</p><a href="${primaryContact()}" target="_blank" rel="noopener">Связаться с менеджером</a></section>`;
  if(template!=="cards-scroll"){
   app.querySelectorAll(".client-description-toggle").forEach(button=>button.addEventListener("click",()=>{
