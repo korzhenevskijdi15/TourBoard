@@ -189,6 +189,8 @@ const socialLabels={telegram:"Telegram",whatsapp:"WhatsApp",max:"MAX",vk:"ВКо
 function initCollectionControls(collection){
  currentCollection=collection;currentTemplate=collection.template||"modern";
  const bar=document.getElementById("collectionControlBar"),menu=document.getElementById("collectionTemplateMenu"),choose=document.getElementById("chooseCollectionTemplate"),socialMenu=document.getElementById("collectionSocialMenu"),socialButton=document.getElementById("sendCollectionSocial"),status=document.getElementById("collectionControlStatus");
+ const editButton=document.getElementById("editCollectionButton");
+ if(editButton)editButton.onclick=()=>{location.href="/edit/"+encodeURIComponent(id)};
  if(!managerMode||!bar)return;bar.hidden=false;
  function closeMenus(){menu.hidden=true;socialMenu.hidden=true;choose.setAttribute("aria-expanded","false");socialButton.setAttribute("aria-expanded","false")}
  function refreshTemplateMenu(){menu.querySelectorAll("[data-template]").forEach(button=>{const active=button.dataset.template===(currentTemplate==="tearoff"?"cards-scroll":currentTemplate);button.setAttribute("aria-checked",String(active));button.classList.toggle("selected",active);button.innerHTML=esc(templateLabels[button.dataset.template])+ (active?' <span class="template-check" aria-hidden="true">✓</span>':"")})}
