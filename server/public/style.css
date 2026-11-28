@@ -1129,3 +1129,48 @@ header{gap:14px;align-items:center}
  .client-template-travel .client-hero-meta .travel-meta-arrival{flex:1 1 auto}
  .client-template-travel .client-hero-meta .travel-meta-nights{flex:0 0 auto}
 }
+
+
+/* v0.21.8 — «Морской бриз»: исправление шапки только на странице подборки */
+.client-template-travel .client-shell{padding-top:12px}
+.client-template-travel .client-header{padding-bottom:8px}
+.client-template-travel .client-hero{margin-top:0}
+.client-template-travel .client-hero-meta.cards-hero-meta{
+ display:flex;
+ flex-direction:row;
+ flex-wrap:nowrap;
+ justify-content:space-between;
+ align-items:center;
+ gap:8px;
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ box-sizing:border-box;
+ overflow:hidden
+}
+.client-template-travel .client-hero-meta .travel-meta-arrival{
+ flex:1 1 auto;
+ min-width:0;
+ max-width:58%;
+ margin-right:0;
+ text-align:left;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+.client-template-travel .client-hero-meta .travel-meta-nights{
+ flex:0 1 auto;
+ min-width:0;
+ max-width:42%;
+ margin-left:0;
+ text-align:right;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+@media(max-width:640px){
+ .client-template-travel .client-hero{margin-top:0;padding:24px 16px 18px}
+ .client-template-travel .client-hero-meta.cards-hero-meta{gap:6px}
+ .client-template-travel .client-hero-meta .travel-meta-arrival{max-width:58%;font-size:13px}
+ .client-template-travel .client-hero-meta .travel-meta-nights{max-width:42%;font-size:13px}
+}
