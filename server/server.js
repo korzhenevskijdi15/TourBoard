@@ -316,6 +316,38 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
    return send(res,200,{ok:true,messageId:info.messageId,accepted:info.accepted});
   }catch(e){console.error("Collection email error:",e.code||"",e.message);return send(res,502,{error:e.code==="EAUTH"?"SMTP не принял логин или пароль. Проверьте SMTP_USER и SMTP_PASS.":e.code==="ETIMEDOUT"||e.code==="ECONNECTION"?"Не удалось подключиться к SMTP-серверу. Проверьте SMTP_HOST, порт и TLS.":e.message||"Не удалось отправить письмо"})}
  }
+ if(req.method==="POST"&&u.pathname==="/api/booking-request"){
+  try{
+   const input=await body(req),collectionId=String(input.collectionId||"").trim().slice(0,100),offerIndex=Number(input.offerIndex),name=String(input.name||"").trim().slice(0,150),phone=String(input.phone||"").trim().slice(0,40);
+   if(!collectionId)return send(res,400,{error:"Не указана подборка"});
+   if(!Number.isInteger(offerIndex)||offerIndex<0)return send(res,400,{error:"Не выбран вариант"});
+   if(name.length<2)return send(res,400,{error:"Укажите имя"});
+   if(!phone||phone.replace(/[^0-9]/g,"").length<5)return send(res,400,{error:"Укажите корректный телефон"});
+   const item=db.collections?.[collectionId];if(!item)return send(res,404,{error:"Подборка не найдена или ссылка устарела"});
+   const offer=item.offers?.[offerIndex];if(!offer)return send(res,404,{error:"Выбранный вариант не найден"});
+   const adminId=item.adminId||item.organizationId||db.users?.[item.ownerId]?.adminId,admin=db.users?.[adminId];
+   if(!admin||admin.role!=="admin")return send(res,400,{error:"Не удалось определить организацию подборки"});
+   const organization=orgSettingsFor(db,admin),to=String(organization.email||"").trim();
+   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to))return send(res,400,{error:"У организации не указан корректный Email. Обратитесь к менеджеру"});
+   const client=db.clients?.[item.clientId]||{},owner=db.users?.[item.ownerId];
+   const manager=owner?.role==="manager"?owner:(item.managerId?Object.values(db.users||{}).find(x=>x.managerId===item.managerId&&x.role==="manager"):null);
+   const managerName=manager?(manager.name||manager.username):"Администратор";
+   const val=v=>String(v??"").trim()||"Не указано";
+   const guests=[offer.adults?val(offer.adults)+" взрослых":"",offer.children?val(offer.children)+" детей":""].filter(Boolean).join(" · ")||"Не указано";
+   const booking=[["Объект",val(offer.hotel||offer.name)],["Адрес",val(offer.address||offer.location)],["Дата заезда",val(offer.date)],["Количество ночей",offer.nights?val(offer.nights)+" ночей":"Не указано"],["Состав гостей",guests],["Номер",val(offer.room)],["Питание",val(offer.meal)],["Цена",val(offer.price)]];
+   const escHtml=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+   const table=rows=>rows.map(([label,value])=>'<tr><td style="padding:9px 12px;color:#68788c;border-bottom:1px solid #e7edf4;width:38%">'+escHtml(label)+'</td><td style="padding:9px 12px;font-weight:600;border-bottom:1px solid #e7edf4">'+escHtml(value)+'</td></tr>').join("");
+   const html='<div style="font-family:Arial,sans-serif;color:#20344d;max-width:700px;margin:auto"><h2 style="color:#1769b2">Новый запрос на бронирование</h2><p>Клиент оставил запрос со страницы обратной связи TourBoard.</p><h3>Подборка</h3><p><strong>'+escHtml(val(item.title))+'</strong></p><p>Менеджер, который отправлял подборку: <strong>'+escHtml(managerName)+'</strong></p><h3>Выбранный вариант и данные бронирования</h3><table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%">'+table(booking)+'</table><h3>Клиент в сервисе TourBoard</h3><table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%">'+table([["Имя",val(client.name)],["Телефон",val(client.phone)],["Почта",val(client.email)]])+'</table><h3>Контактные данные из запроса</h3><table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%">'+table([["Имя",name],["Телефон",phone]])+'</table><p style="margin-top:24px;color:#78879a;font-size:12px">Письмо сформировано автоматически сервисом TourBoard.</p></div>';
+   const plain="Новый запрос на бронирование\n\nПодборка: "+val(item.title)+"\nМенеджер, который отправлял подборку: "+managerName+"\n\n"+booking.map(([k,v])=>k+": "+v).join("\n")+"\n\nКлиент в сервисе TourBoard:\nИмя: "+val(client.name)+"\nТелефон: "+val(client.phone)+"\nПочта: "+val(client.email)+"\n\nДанные из запроса:\nИмя: "+name+"\nТелефон: "+phone;
+   const smtpHost=process.env.SMTP_HOST||"smtp.spaceweb.ru",smtpPort=Number(process.env.SMTP_PORT||465),smtpUser=process.env.SMTP_USER||"offers@tourboard.online",smtpPass=process.env.SMTP_PASS;
+   if(!smtpPass)return send(res,503,{error:"SMTP не настроен на сервере: задайте SMTP_PASS в server/.env"});
+   let nodemailer;try{nodemailer=require("nodemailer")}catch{return send(res,503,{error:"Не установлен Nodemailer. Выполните npm install в папке server"})}
+   if(!mailTransport)mailTransport=nodemailer.createTransport({host:smtpHost,port:smtpPort,secure:String(process.env.SMTP_SECURE||"true").toLowerCase()==="true",auth:{user:smtpUser,pass:smtpPass},connectionTimeout:15000,greetingTimeout:15000,socketTimeout:30000});
+   const from=process.env.SMTP_FROM||"TourBoard <offers@tourboard.online>";
+   const info=await mailTransport.sendMail({from,to,subject:"Запрос на бронирование — "+val(item.title).slice(0,120),html,text:plain,replyTo:to});
+   return send(res,200,{ok:true,message:"Запрос отправлен",messageId:info.messageId});
+  }catch(e){console.error("Booking request email error:",e.code||"",e.message);return send(res,502,{error:e.code==="EAUTH"?"SMTP не принял логин или пароль. Проверьте SMTP_USER и SMTP_PASS.":e.code==="ETIMEDOUT"||e.code==="ECONNECTION"?"Не удалось подключиться к SMTP-серверу. Проверьте SMTP_HOST, порт и TLS.":e.message||"Не удалось отправить запрос"})}
+ }
  if(req.method==="GET"&&u.pathname==="/api/collections"){
   const user=requireUser(req,res);if(!user)return;
   const organizationId=orgIdFor(user.role==="admin"?user:(db.users?.[user.adminId]||user));
