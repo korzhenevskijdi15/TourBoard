@@ -491,6 +491,8 @@ function defaultEmailBodyHtml(){
   }
  }
 
+ // «Морской бриз»: заголовок и счетчик вариантов не включаем в письмо.
+ if(currentTemplate==="travel") clone.querySelector(".client-offers-heading")?.remove();
  const rootClass=esc(document.body.className||"client-page");
  const outerMax=(currentTemplate==="simple"||currentTemplate==="modern")?"600px":"880px";
  const emailStyle=(currentTemplate==="simple"||currentTemplate==="modern")?`<style>

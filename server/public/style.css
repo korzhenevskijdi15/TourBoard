@@ -1174,3 +1174,47 @@ header{gap:14px;align-items:center}
  .client-template-travel .client-hero-meta .travel-meta-arrival{max-width:58%;font-size:13px}
  .client-template-travel .client-hero-meta .travel-meta-nights{max-width:42%;font-size:13px}
 }
+
+
+/* v0.21.9 — «Морской бриз»: надежный правый отступ метки ночей */
+.client-template-travel .client-hero-meta.cards-hero-meta{
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ padding-right:20px!important;
+ box-sizing:border-box!important;
+ display:flex!important;
+ flex-direction:row!important;
+ flex-wrap:nowrap!important;
+ justify-content:space-between!important;
+ align-items:center!important;
+ gap:8px!important;
+ overflow:hidden!important
+}
+.client-template-travel .client-hero-meta .travel-meta-arrival{
+ flex:1 1 0!important;
+ min-width:0!important;
+ max-width:60%!important;
+ margin:0!important;
+ text-align:left!important;
+ white-space:nowrap!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important
+}
+.client-template-travel .client-hero-meta .travel-meta-nights{
+ flex:0 1 auto!important;
+ min-width:0!important;
+ max-width:40%!important;
+ margin:0 10px 0 0!important;
+ padding:0!important;
+ text-align:right!important;
+ white-space:nowrap!important;
+ overflow:hidden!important;
+ text-overflow:ellipsis!important;
+ box-sizing:border-box!important
+}
+@media(max-width:640px){
+ .client-template-travel .client-hero-meta.cards-hero-meta{padding-right:20px!important;gap:6px!important}
+ .client-template-travel .client-hero-meta .travel-meta-arrival{max-width:60%!important;font-size:13px!important}
+ .client-template-travel .client-hero-meta .travel-meta-nights{max-width:40%!important;margin-right:10px!important;font-size:13px!important}
+}
