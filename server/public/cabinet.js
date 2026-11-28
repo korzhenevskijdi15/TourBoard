@@ -34,6 +34,7 @@ if(currentUser.role==="admin"){
  ["organizationSettings","managersPanel","organizationsPanel","userCreationPanel"].forEach(id=>{$(id).hidden=true;$(id).style.display="none";});
  $("creatorAccountSettings").hidden=true;
 }
+$("passwordChangeSettings").hidden=currentUser.role==="creator";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let editingId=null,offers=[],collectionTemplate="modern";
 const fields=[["hotel","Название объекта"],["location","Адрес"],["customImage","URL фото отеля"],["descriptionLink","Ссылка на описание"],["price","Стоимость"],["tariff","Тариф"],["room","Номер"],["meal","Питание"],["flightIncluded","Перелёт"],["description","Описание"],["comment","Комментарий для клиента"]];
@@ -141,6 +142,15 @@ $("settingsForm").addEventListener("submit",async e=>{
 $("creatorAccountForm").addEventListener("submit",async e=>{
  e.preventDefault();const f=new FormData(e.currentTarget),result=$("creatorAccountResult");result.textContent="Сохраняем…";
  try{const r=await fetch("/api/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:f.get("username"),currentPassword:f.get("currentPassword"),newPassword:f.get("newPassword")})}),d=await r.json();if(!r.ok)throw Error(d.error||"Не удалось изменить учётную запись");currentUser.username=d.user.username;result.textContent="Логин и пароль обновлены.";e.currentTarget.elements.currentPassword.value="";e.currentTarget.elements.newPassword.value="";}
+ catch(err){result.textContent="Ошибка: "+err.message}
+});
+$("passwordChangeForm").addEventListener("submit",async e=>{
+ e.preventDefault();const f=new FormData(e.currentTarget),currentPassword=String(f.get("currentPassword")||""),newPassword=String(f.get("newPassword")||""),confirmPassword=String(f.get("confirmPassword")||""),result=$("passwordChangeResult");
+ result.textContent="";
+ if(newPassword!==confirmPassword){result.textContent="Новые пароли не совпадают.";return}
+ if(newPassword.length<10||newPassword.length>200){result.textContent="Новый пароль должен содержать от 10 до 200 символов.";return}
+ result.textContent="Изменяем пароль…";
+ try{const r=await fetch("/api/account/password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({currentPassword,newPassword,confirmPassword})}),d=await r.json();if(!r.ok)throw Error(d.error||"Не удалось изменить пароль");result.textContent="Пароль успешно изменён.";e.currentTarget.reset()}
  catch(err){result.textContent="Ошибка: "+err.message}
 });
 const orgKeys=["companyName","logo","phone","email","telegram","whatsapp","max","vk","address","website"];
