@@ -772,3 +772,15 @@ function render(c){
 }
 initEmailPreview();
 Promise.all([fetch("/api/collections/"+encodeURIComponent(id)).then(r=>{if(!r.ok)throw Error("Подборка не найдена или ссылка устарела");return r.json()}),fetch("/api/public/settings?collectionId="+encodeURIComponent(id)).then(r=>r.ok?r.json():{}).catch(()=>({})),fetch("/api/auth/me").then(r=>r.ok?r.json():null).catch(()=>null)]).then(([collection,settings,auth])=>{managerSettings={...managerSettings,...settings};managerMode=!!auth&&["admin","manager"].includes(auth.user?.role);updateHeaderContacts();initCollectionControls(collection);render(collection)}).catch(e=>{app.innerHTML=`<div class="client-error"><h1>Не удалось открыть подборку</h1><p>${esc(e.message)}</p><a href="https://bagtravels.ru/">Перейти на сайт туроператора</a></div>`});
+
+// Booking inquiry page: open the selected offer in a separate tab/page.
+app.addEventListener("click",event=>{
+ const button=event.target.closest(".client-offer .client-cta");
+ if(!button)return;
+ event.preventDefault();
+ const article=button.closest(".client-offer");
+ const offerIndex=Array.from(app.querySelectorAll(".client-offer")).indexOf(article);
+ if(offerIndex<0)return;
+ const target="/booking?collectionId="+encodeURIComponent(id)+"&offerIndex="+offerIndex;
+ window.location.href=target;
+});
