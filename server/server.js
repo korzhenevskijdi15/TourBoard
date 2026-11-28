@@ -161,7 +161,19 @@ const app=http.createServer(async(req,res)=>{
  if(req.method==="GET"&&u.pathname==="/api/managers"){
   const user=requireAdmin(req,res);if(!user)return;return send(res,200,Object.values(db.users||{}).filter(x=>x.role==="manager"&&x.adminId===user.id).map(safeUser))
  }
- if(req.method==="POST"&&u.pathname==="/api/managers"){
+ const managerDeleteMatch=u.pathname.match(/^\/api\/managers\/([^/]+)$/);
+if(req.method==="DELETE"&&managerDeleteMatch){
+ const admin=requireAdmin(req,res);if(!admin)return;
+ const managerId=decodeURIComponent(managerDeleteMatch[1]),manager=db.users?.[managerId];
+ if(!manager||manager.role!=="manager"||manager.adminId!==admin.id)return send(res,404,{error:"Менеджер не найден"});
+ for(const item of Object.values(db.collections||{})){
+  if(item.ownerId===manager.id){item.ownerId=admin.id;item.createdBy=admin.id;item.adminId=admin.id;item.managerId=null}
+ }
+ delete db.users[manager.id];
+ for(const [token,session] of sessions){if(session.userId===manager.id)sessions.delete(token)}
+ write(db);return send(res,200,{ok:true});
+}
+if(req.method==="POST"&&u.pathname==="/api/managers"){
   const admin=requireAdmin(req,res);if(!admin)return;
   try{const input=await body(req),username=String(input.username||"").trim().toLowerCase(),name=String(input.name||"").trim().slice(0,150);
    if(!validateUsername(username))return send(res,400,{error:"Логин: 3–40 символов или корректный Email"});
