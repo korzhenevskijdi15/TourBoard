@@ -20,6 +20,14 @@
 </div>
 <div class="actions"><button type="submit" id="saveSettings">Сохранить настройки</button></div><div id="settingsResult" class="result" aria-live="polite"></div>
 </form>
+<div class="account-password-settings" id="passwordChangeSettings" hidden>
+ <div class="toolbar"><div><h4>Изменение пароля</h4><p class="settings-hint">Для безопасности подтвердите текущий пароль. Новый пароль нужно ввести дважды.</p></div></div>
+ <form id="passwordChangeForm"><div class="field-grid settings-grid">
+  <label>Текущий пароль<input name="currentPassword" type="password" required autocomplete="current-password"></label>
+  <label>Новый пароль<input name="newPassword" type="password" required minlength="10" maxlength="200" autocomplete="new-password" placeholder="Не менее 10 символов"></label>
+  <label>Повторите новый пароль<input name="confirmPassword" type="password" required minlength="10" maxlength="200" autocomplete="new-password" placeholder="Введите новый пароль ещё раз"></label>
+ </div><div class="actions"><button type="submit">Изменить пароль</button></div><div id="passwordChangeResult" class="result" aria-live="polite"></div></form>
+</div>
 <div class="creator-account-settings" id="creatorAccountSettings" hidden>
  <div class="toolbar"><div><h4>Учётная запись Создателя</h4><p class="settings-hint">Можно изменить логин и пароль. Для подтверждения изменений введите текущий пароль.</p></div></div>
  <form id="creatorAccountForm"><div class="field-grid settings-grid">
