@@ -279,7 +279,7 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
   try{
    const id=decodeURIComponent(u.pathname.split("/")[3]),item=db.collections?.[id];
    if(!item)return send(res,404,{error:"Подборка не найдена"});
-   if(!collectionOwnerAllowed(user,item))return send(res,403,{error:"Нет прав на отправку этой подборки"});
+   if(!collectionOwnerAllowed(user,item,db))return send(res,403,{error:"Нет прав на отправку этой подборки"});
    const input=await body(req),to=String(input.to||"").trim(),subject=String(input.subject||"").trim().slice(0,200);
    let html=String(input.html||"");
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to))return send(res,400,{error:"Укажите корректный Email получателя"});
@@ -344,7 +344,7 @@ if(req.method==="POST"&&u.pathname==="/api/managers"){
  }
  if(req.method==="POST"&&u.pathname.startsWith("/api/collections/")){
   const user=requireUser(req,res);if(!user)return;const id=decodeURIComponent(u.pathname.split("/").pop());
-  try{const input=await body(req),item=db.collections?.[id];if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item))return send(res,403,{error:"Нет прав на эту подборку"});
+  try{const input=await body(req),item=db.collections?.[id];if(!item)return send(res,404,{error:"Подборка не найдена"});if(!collectionOwnerAllowed(user,item,db))return send(res,403,{error:"Нет прав на эту подборку"});
    item.title=String(input.title||item.title).slice(0,150);if(Object.prototype.hasOwnProperty.call(input,"clientId")){if(["admin","manager"].includes(user.role)&&!input.clientId)return send(res,400,{error:"Выберите клиента для подборки"});item.clientId=validateCollectionClient(db,user,input.clientId);}const allowedTemplates=["detailed","simple","tearoff","cards-scroll","modern","travel"];if(allowedTemplates.includes(input.template))item.template=input.template;item.offers=Array.isArray(input.offers)?input.offers:item.offers;item.updatedAt=new Date().toISOString();write(db);return send(res,200,item)
   }catch(e){return send(res,400,{error:e.message})}
  }
